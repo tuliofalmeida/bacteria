@@ -6,28 +6,28 @@ Usage
 Installation
 ------------
 
-To use Lumache, first install it using pip:
+The latest stable release is available on PyPi, and you can install it by saying
 
 .. code-block:: console
 
-   (.venv) $ pip install lumache
+   (.venv) $ pip install bacteria
 
-Creating recipes
-----------------
+To build Bacteria from source, say ``python setup.py build``.
+Then, to install Bacteria, say ``python setup.py install``.
+If all went well, you should be able to execute the demo scripts (read docs)
+(OS X users should follow the installation guide given below).
 
-To retrieve a list of random ingredients,
-you can use the ``lumache.get_random_ingredients()`` function:
+Alternatively, you can download or clone the repository and use `pip` to handle dependencies:
 
+``unzip bacteria.zip``
 
+``pip install -e bacteria``
 
-The ``kind`` parameter should be either ``"meat"``, ``"fish"``,
-or ``"veggies"``. Otherwise, :py:func:`lumache.get_random_ingredients`
-will raise an exception.
+or
 
+``git clone https://github.com/tuliofalmeida/bacteria``
 
-For example:
+``pip install -e bacteria``
 
-.. >>> import lumache
-.. >>> lumache.get_random_ingredients()
-.. ['shells', 'gorgonzola', 'parsley']
-
+By calling ``pip list`` you should see ``bacteria`` now as an installed package:
+``bacteria (1.x.x, /path/to/bacteria)``

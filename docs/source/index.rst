@@ -1,10 +1,9 @@
 Welcome to Lumache's documentation!
 ===================================
 
-Bacteria is a Python library for cooks and food lovers
-that creates recipes mixing random ingredients.
-It pulls data from the `Open Food Facts database <https://world.openfoodfacts.org/>`_
-and offers a *simple* and *intuitive* API.
+Bacteria and a Python library to analyze SuperSegger data (clists).
+The library was developed using procedural programming to facilitate 
+its use by users with little experience in Python.
 
 Check out the :doc:`usage` section for further information, including
 how to :ref:`installation` the project.
