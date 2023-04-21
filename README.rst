@@ -2,9 +2,9 @@ Installation
 =======================================
 
 The latest stable release is available on PyPI, and you can install it by saying
-``
+.. code-block::
 pip install bacteria
-``
+
 
 To build Bacteria from source, say `python setup.py build`.
 Then, to install Bacteria, say `python setup.py install`.
@@ -13,7 +13,7 @@ If all went well, you should be able to execute the demo scripts (read docs)
 
 Alternatively, you can download or clone the repository and use `pip` to handle dependencies:
 
-``
+.. code-block::
 unzip bacteria.zip
 pip install -e bacteria
 ``
