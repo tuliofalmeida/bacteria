@@ -1,4 +1,4 @@
-Welcome to Lumache's documentation!
+Welcome to Bacteria's documentation!
 ===================================
 
 Bacteria and a Python library to analyze SuperSegger data (clists).
