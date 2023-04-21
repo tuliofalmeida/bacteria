@@ -31,4 +31,5 @@ By calling ``pip list`` you should see ``bacteria`` now as an installed package:
 
 Documentation
 =======================================
-.. _A cool website: bacteria.rtfd.io
+`Documentation site`_
+.. _Documentation site: bacteria.rtfd.io
