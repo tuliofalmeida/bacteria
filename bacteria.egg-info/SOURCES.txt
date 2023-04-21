@@ -1,0 +1,10 @@
+README.md
+setup.py
+bacteria/__init__.py
+bacteria/functions.py
+bacteria/pipeline.py
+bacteria.egg-info/PKG-INFO
+bacteria.egg-info/SOURCES.txt
+bacteria.egg-info/dependency_links.txt
+bacteria.egg-info/requires.txt
+bacteria.egg-info/top_level.txt

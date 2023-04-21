@@ -1,0 +1,8 @@
+numpy
+pandas
+graphviz
+scikit-learn
+seaborn
+natsort
+anytree
+scipy

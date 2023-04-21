@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: bacteria
+Version: 0.0.9
+Summary: Super Segger Analysis in Python.
+Home-page: https://github.com/tuliofalmeida/bacteria
+License: MIT
+Download-URL: https://github.com/tuliofalmeida/bacteria
+Keywords: Data analysis,Cell analysis,Bacteria,SuperSegger
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3.9
+Description-Content-Type: text/markdown
+
+UNKNOWN
+
