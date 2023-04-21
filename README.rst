@@ -1,3 +1,6 @@
+Bacteria
+=======================================
+
 Installation
 =======================================
 
@@ -25,3 +28,7 @@ or
 
 By calling ``pip list`` you should see ``bacteria`` now as an installed package:
 ``bacteria (1.x.x, /path/to/bacteria)``
+
+Documentation
+=======================================
+.. _A cool website: bacteria.rtfd.io
