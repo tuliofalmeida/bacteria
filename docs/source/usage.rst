@@ -15,7 +15,7 @@ Then, to install Bacteria, say ``python setup.py install``.
 If all went well, you should be able to execute the demo scripts (read docs)
 (OS X users should follow the installation guide given below).
 
-Alternatively, you can download or clone the repository and use `pip` to handle dependencies:
+Alternatively, you can download or clone the repository and use ``pip`` to handle dependencies:
 
 ``unzip bacteria.zip``
 
