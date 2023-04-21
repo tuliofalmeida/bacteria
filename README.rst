@@ -14,11 +14,13 @@ Alternatively, you can download or clone the repository and use `pip` to handle 
 
 
 ``unzip bacteria.zip``
+
 ``pip install -e bacteria``
 
 or
 
 ``git clone https://github.com/tuliofalmeida/bacteria``
+
 ``pip install -e bacteria``
 
 By calling ``pip list`` you should see ``bacteria`` now as an installed package:
