@@ -1,5 +1,6 @@
 Bacteria
 =======================================
+Bacteira is a python library to analyze supersegger data.
 
 Installation
 =======================================
