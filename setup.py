@@ -1,16 +1,16 @@
 import wheel
 import setuptools
  
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
   
 setuptools.setup(
     name = 'bacteria',         
     packages = ['bacteria'],   
-    version = '0.0.9',      
+    version = '0.1.0',      
     license='MIT',       
     description = 'Super Segger Analysis in Python.',
-    long_description_content_type="text/markdown",
+    long_description_content_type="text/x-rst",
     url = 'https://github.com/tuliofalmeida/bacteria',  
     download_url = 'https://github.com/tuliofalmeida/bacteria',    
     keywords = ['Data analysis', 'Cell analysis', 'Bacteria', 'SuperSegger'],   
