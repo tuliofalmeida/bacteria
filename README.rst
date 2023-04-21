@@ -33,4 +33,4 @@ Documentation
 =======================================
 `Documentation site`_
 
-.. _Documentation site: bacteria.rtfd.io
+.. _Documentation site: https://bacteria.rtfd.io
