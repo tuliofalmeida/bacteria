@@ -1,16 +1,12 @@
 Usage
 =====
 
-.. _installation:
-
 Installation
 ------------
 
 The latest stable release is available on PyPi, and you can install it by saying
 
-.. code-block:: console
-
-   (.venv) $ pip install bacteria
+``$ pip install bacteria``
 
 To build Bacteria from source, say ``python setup.py build``.
 Then, to install Bacteria, say ``python setup.py install``.
