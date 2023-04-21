@@ -13,10 +13,10 @@ If all went well, you should be able to execute the demo scripts (read docs)
 
 Alternatively, you can download or clone the repository and use `pip` to handle dependencies:
 
-.. code-block::
-unzip bacteria.zip
+
+``unzip bacteria.zip``
 pip install -e bacteria
-``
+
 or
 ``
 git clone https://github.com/tuliofalmeida/bacteria
