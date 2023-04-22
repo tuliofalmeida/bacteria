@@ -5,7 +5,7 @@ Bacteria and a Python library to analyze SuperSegger data (clists).
 The library was developed using procedural programming to facilitate 
 its use by users with little experience in Python.
 
-Check out the :doc:`usage` section for further information, including
+Check out the :doc:`intrdocution` section for further information, including
 how to :ref:`installation` the project.
 
 .. note::
@@ -17,5 +17,5 @@ Contents
 
 .. toctree::
 
-   usage
+   intrdocution
    api
