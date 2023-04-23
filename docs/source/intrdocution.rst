@@ -63,12 +63,21 @@ Concatenate data
 To load and concatenate multiple field of view data from a single experiment,
 if the data is organized inside the SuperSegger folder, use:
 
-    >>> path = "/SuperSegger Data/Exp001"
+    >>> path = "/SuperSegger Data/Exp001/"
     >>> df2d,df3d,_ = concatenate_clist(path)
 
 .. note::
    By concatenating the data, it is possible to identify the cells of each FOV and the 
    Cell ID is modified to remain unique, the IDs are a continuous count at each FOV.
+
+Or you can pass it the path to a folder with all the clists of the experiment
+
+    >>> path_clists = "/SuperSegger Data/clists folder/"
+    >>> df2d,df3d,_ = concatenate_clist(path_clists, direct = True)
+
+.. note::
+   Is it possible to save this arrangement in a .mat file (this arrangement is different
+   from the concatenation done by SuperSegger)
 
 Filters
 --------
