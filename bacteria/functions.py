@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from IPython import display
 from scipy.stats import sem
 from natsort import natsorted # pip install natsort
 from tqdm.notebook import tqdm
@@ -2092,8 +2093,7 @@ def plot_reverse_lineages(df_2d, lineage_list, column = 'Long axis (L) death', l
 	--------------
 	None
 	"""
-    from IPython import display
-	graph = graphviz.Digraph('unix', filename='unix.gv',
+    graph = graphviz.Digraph('unix', filename='unix.gv',
 						node_attr={'color': 'white', 'style': 'filled'})
 	graph.attr(size='1920,1080',rankdir='LR')
 
@@ -2287,7 +2287,6 @@ def plot_large_lineages(df_2d, lineage_list, return_plot = False):
 	--------------
 	None
 	"""
-    from IPython import display
 	graph = graphviz.Digraph('unix', filename='unix.gv',
 						node_attr={'color': 'white', 'style': 'filled'})
 	graph.attr(size='1920,1080',rankdir='LR')
