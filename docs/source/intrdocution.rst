@@ -82,7 +82,7 @@ size or greater than 60% of the mother's size.
     >>> df2d_f,df3d_f,_ = combined_filters(df2d,df3d)
 
 .. note::
-   The function returns a histogram with the effect of the filter on the data and it is
+   The function returns a histogram with the effect of each filter on the data and it is
    possible to adjust some parameters and select whether all filters will be applied.
 
 Hint!
