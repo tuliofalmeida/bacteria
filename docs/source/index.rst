@@ -14,8 +14,8 @@ Contents
 .. toctree::
 
    intrdocution
-   api
    data
+   api
    all_func
 
 .. _SuperSegger: http://mtshasta.phys.washington.edu/website/SuperSegger.php
