@@ -1402,11 +1402,13 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
         [volume,fluor,time,F/V and all derivatives] 
         of each cell at the slide window (cell number = key).
     """
-    import sys
-    if 'tqdm' in sys.modules:
-        from tqdm.notebook import tqdm
-    else:
-        bar = False
+    from tqdm.notebook import tqdm
+    # import sys
+    # if 'tqdm' in sys.modules:
+    #     print()
+    #     from tqdm.notebook import tqdm
+    # else:
+    #     bar = False
     if column == 'Volume':
         df_dev = pd.melt(df_3d, id_vars=['Cell ID','Time (fps)','F/V'], value_vars=[column]).sort_values(by=['Cell ID','Time (fps)'])
     else:

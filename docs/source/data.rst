@@ -3,11 +3,11 @@ Data Structure
 
 .. _data:
 
-This section presents the dataframe structure of 2D and 3D data
+This section presents the dataframe columns of 2D and 3D data.
 
 .. note::
-   stat0 = 0 means no birth was observed, stat0 = 1 means no death/division was observed, 
-   stat0 = 2 means both birth and death were observed.
+   Most of the columns are direct from SuperSegger and some are 
+   added during concatenation (bacteria.concatenate_clist()). 
 
 2D data
 --------
@@ -45,3 +45,20 @@ This section presents the dataframe structure of 2D and 3D data
 
 3D data
 --------
+
+ * Cell ID - Unique cell identification
+ * Long axis (L) - Length of the long axis at each time point (px)
+ * Short axis - Length of the short axis at each time point (px)
+ * Area - Area of the cell at each time point (px)
+ * Fluor1 sum - Fluorescence intensity integrated over the cell area at each time point
+ * Fluor1 mean - Average (by area) fluorescence intensity for the cell at each time point
+ * Long axis length - Length of the long axis at each time point (px)
+ * Time (Frames) - Frame reference for each feature (frames)
+ * Age (Frames) - Cell age at each time point (frames)
+ * Relative Age (Frames) - Cell age at each time point relative to the experiment (frames)
+ * Time (fps) - Frame reference for each feature in minutes (min)
+ * Age (fps) - Cell age at each time point in minutes (min) 
+ * Volume - Cell volume at each time point (:math:`um^3`)
+ * fov - The field of view that this cell belongs to
+ * F/V - Ratio between Fluorescence and Volume at each time point
+ * Cell Cycle - The cell cycle in bins between 0 and 1
