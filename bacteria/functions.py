@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from IPython import display
+# from IPython import display
 from scipy.stats import sem
 from natsort import natsorted # pip install natsort
 from tqdm.notebook import tqdm
@@ -2066,46 +2066,85 @@ def lineages(df_2d, nodes_min=5):
 	return reverse_lineages, large_lineages, large_nodes, all_nodes
 
 def plot_reverse_lineages(df_2d, lineage_list, column = 'Long axis (L) death', label = 'Cell Size ',for_ref = 2,return_plot = False):
-	"""
-	Plot the reverse lineage data with one column value.
-	This plot remove the last value, as by the filter 
-	we dont have the data from cells without daughters.
-	This plot is made using graphviz, the variable can
-	be used to save the plot in pdf.
+    """
+    Plot the reverse lineage data with one column value.
+    This plot remove the last value, as by the filter 
+    we dont have the data from cells without daughters.
+    This plot is made using graphviz, the variable can
+    be used to save the plot in pdf.
 
-	Parameters
-	--------------
-	df_2d : DataFrame
-		2D data
-	lineage_list : list
-		list with the Cell ID's to plot
-	column : str (optional)
-		column value to plot alongside with the ID's
-	label : str (optional)
-		Label to use alongside with the column value,
-		as usual the column name is to big.
-	for_ref : int (optional)
-		The limit of the for range (in range - for_ref)
-	return_plot : bool (optional)
-		If true return the graphviz variable.
-		
-	Returns
-	--------------
-	None
-	"""
+    Parameters
+    --------------
+    df_2d : DataFrame
+        2D data
+    lineage_list : list
+        list with the Cell ID's to plot
+    column : str (optional)
+        column value to plot alongside with the ID's
+    label : str (optional)
+        Label to use alongside with the column value,
+        as usual the column name is to big.
+    for_ref : int (optional)
+        The limit of the for range (in range - for_ref)
+    return_plot : bool (optional)
+        If true return the graphviz variable.
+        
+    Returns
+    --------------
+    None
+    """
+    from IPython import display
     graph = graphviz.Digraph('unix', filename='unix.gv',
-						node_attr={'color': 'white', 'style': 'filled'})
-	graph.attr(size='1920,1080',rankdir='LR')
+                        node_attr={'color': 'white', 'style': 'filled'})
+    graph.attr(size='1920,1080',rankdir='LR')
 
-	for i in range(len(lineage_list)-for_ref):
-		a = 'ID '+str(lineage_list[i]) +'\n'+ label + str(int(df_2d[df_2d['Cell ID'] == lineage_list[i]][column].values[0])) 
-		b = 'ID '+str(lineage_list[i+1]) +'\n'+ label + str(int(df_2d[df_2d['Cell ID'] == lineage_list[i+1]][column].values[0])) 
-		graph.edge(a,b)
-	
-	if return_plot:
-		return graph
-	else:
-		display.display_svg(graph)
+    for i in range(len(lineage_list)-for_ref):
+        a = 'ID '+str(lineage_list[i]) +'\n'+ label + str(int(df_2d[df_2d['Cell ID'] == lineage_list[i]][column].values[0])) 
+        b = 'ID '+str(lineage_list[i+1]) +'\n'+ label + str(int(df_2d[df_2d['Cell ID'] == lineage_list[i+1]][column].values[0])) 
+        graph.edge(a,b)
+
+    if return_plot:
+        return graph
+    else:
+        display.display_svg(graph)
+  
+def plot_large_lineages(df_2d, lineage_list, return_plot = False):
+    """
+    Plot the large lineage data without prune the data.
+    This plot is made using graphviz, the variable can
+    be used to save the plot in pdf.
+
+    Parameters
+    --------------
+    df_2d : DataFrame
+        2D data
+    lineage_list : list
+        list with the Cell ID's to plot
+    return_plot : bool (optional)
+        If true return the graphviz variable.
+        
+    Returns
+    --------------
+    None
+    """
+    from IPython import display
+    graph = graphviz.Digraph('unix', filename='unix.gv',
+                        node_attr={'color': 'white', 'style': 'filled'})
+    graph.attr(size='1920,1080',rankdir='LR')
+
+    for i in df_2d[df_2d['Cell ID'].isin(lineage_list)]['Cell ID'].values:
+        id_d1 = int(df_2d[df_2d['Cell ID']==i]['Daughter1 ID'].values[0])
+        id_d2 = int(df_2d[df_2d['Cell ID']==i]['Daughter2 ID'].values[0])
+        parent = 'ID '+ str(int(i)) 
+        d1 = 'ID '+str(id_d1)
+        d2 = 'ID '+str(id_d2)
+        graph.edge(parent, d1)
+        graph.edge(parent, d2)
+
+    if return_plot:
+        return graph
+    else:
+        display.display_svg(graph)
 
 def plot_cell_size_lineage(df_2d,reverse_lineage, ax = None):
 	"""
@@ -2267,43 +2306,6 @@ def plot_lineages_check(df_2d,reverse_lineages,y_axis,colormap = 'rainbow'):
 	plt.colorbar(s_m);
 	plt.tight_layout()
 	plt.show()
-
-def plot_large_lineages(df_2d, lineage_list, return_plot = False):
-	"""
-	Plot the large lineage data without prune the data.
-	This plot is made using graphviz, the variable can
-	be used to save the plot in pdf.
-
-	Parameters
-	--------------
-	df_2d : DataFrame
-		2D data
-	lineage_list : list
-		list with the Cell ID's to plot
-	return_plot : bool (optional)
-		If true return the graphviz variable.
-		
-	Returns
-	--------------
-	None
-	"""
-	graph = graphviz.Digraph('unix', filename='unix.gv',
-						node_attr={'color': 'white', 'style': 'filled'})
-	graph.attr(size='1920,1080',rankdir='LR')
-
-	for i in df_2d[df_2d['Cell ID'].isin(lineage_list)]['Cell ID'].values:
-		id_d1 = int(df_2d[df_2d['Cell ID']==i]['Daughter1 ID'].values[0])
-		id_d2 = int(df_2d[df_2d['Cell ID']==i]['Daughter2 ID'].values[0])
-		parent = 'ID '+ str(int(i)) 
-		d1 = 'ID '+str(id_d1)
-		d2 = 'ID '+str(id_d2)
-		graph.edge(parent, d1)
-		graph.edge(parent, d2)
-
-	if return_plot:
-		return graph
-	else:
-		display.display_svg(graph)
 
 def plot_total_fluo_volume(df_3d, reverse_lineage, ax = None):
 	"""
