@@ -1,5 +1,5 @@
 Intrdocution
-=====
+==============
 
 .. _installation:
 
@@ -19,18 +19,30 @@ If all went well, you should be able to execute the demo scripts (read docs)
 
 Alternatively, you can download or clone the repository and use ``pip`` to handle dependencies:
 
+.. code-block:: console
 
-``unzip bacteria.zip``
-
-``pip install -e bacteria``
+   (.venv) $ unzip bacteria.zip
+   (.venv) $ pip install -e bacteria
 
 or
 
-``git clone https://github.com/tuliofalmeida/bacteria``
+.. code-block:: console
 
-``pip install -e bacteria``
+   (.venv) $ git clone https://github.com/tuliofalmeida/bacteria
+   (.venv) $ pip install -e bacteria
 
 By calling ``pip list`` you should see ``bacteria`` now as an installed package:
 ``bacteria (1.x.x, /path/to/bacteria)``
 
+.. _IO:
 
+IO
+---
+
+The library's input is the SuperSegger data, the clist, and the organization used in 
+pandas DataFrame. Its possible to load one clist and extract the 2D and 3D data and 
+also concatenate clists from different fields of view into a single dataframe.
+
+.. code-block:: console
+
+   (.venv) $ pip install bacteria
