@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 # from IPython import display
 from scipy.stats import sem
 from natsort import natsorted # pip install natsort
-from tqdm.notebook import tqdm
 from datetime import date,timedelta
 from matplotlib.lines import Line2D
 from sklearn import preprocessing as pre
@@ -1406,6 +1405,7 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
         [volume,fluor,time,F/V and all derivatives] 
         of each cell at the slide window (cell number = key).
     """
+    from tqdm.notebook import tqdm
     if column == 'Volume':
         df_dev = pd.melt(df_3d, id_vars=['Cell ID','Time (fps)','F/V'], value_vars=[column]).sort_values(by=['Cell ID','Time (fps)'])
     else:
