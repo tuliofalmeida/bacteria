@@ -6,7 +6,7 @@ Data Structure
 This section presents the dataframe columns of 2D and 3D data.
 
 .. note::
-   Most of the columns are direct from SuperSegger and some are 
+   Most of the columns are direct from `SuperSegger`_ and some are 
    added during concatenation (bacteria.concatenate_clist()). 
 
 2D data
@@ -62,3 +62,5 @@ This section presents the dataframe columns of 2D and 3D data.
  * fov - The field of view that this cell belongs to
  * F/V - Ratio between Fluorescence and Volume at each time point
  * Cell Cycle - The cell cycle in bins between 0 and 1
+
+.. _SuperSegger: https://github.com/tlo-bot/supersegger-omnipose

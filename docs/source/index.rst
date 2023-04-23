@@ -1,7 +1,7 @@
 Welcome to Bacteria's documentation!
 =====================================
 
-Bacteria and a Python library to analyze SuperSegger data (clists).
+Bacteria and a Python library to analyze `SuperSegger`_  (with `Omnipose`_) data.
 The library was developed using procedural programming to facilitate 
 its use by users with little experience in Python.
 
@@ -21,3 +21,6 @@ Contents
    api
    data
    all_func
+
+.. _SuperSegger: http://mtshasta.phys.washington.edu/website/SuperSegger.php
+.. _Omnipose: https://github.com/tlo-bot/supersegger-omnipose
