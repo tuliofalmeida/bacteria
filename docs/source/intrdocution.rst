@@ -43,6 +43,55 @@ The library's input is the SuperSegger data, the clist, and the organization use
 pandas DataFrame. Its possible to load one clist and extract the 2D and 3D data and 
 also concatenate clists from different fields of view into a single dataframe.
 
-.. code-block:: console
+Single data
+-----------
 
-   (.venv) $ pip install bacteria
+To load data from a single field of view
+
+    >>> import bacteria as bac
+    >>> path_2d = "data/2d_clist.mat"
+    >>> path_3d = "data/3d_clist.mat"    
+    >>> df2d = df_data2d(path_2d,fps = 3)
+    >>> df3d = df_data3d(path_3d,fps = 3)
+
+.. note::
+   The fps parameter is to create the time column in minutes.
+
+Concatenate data
+----------------
+
+To load and concatenate multiple field of view data from a single experiment,
+if the data is organized inside the SuperSegger folder, use:
+
+    >>> path = "/SuperSegger Data/Exp001"
+    >>> df2d,df3d,_ = concatenate_clist(path)
+
+.. note::
+   By concatenating the data, it is possible to identify the cells of each FOV and the 
+   Cell ID is modified to remain unique, the IDs are a continuous count at each FOV.
+
+Filters
+--------
+
+The library has 2 filters implemented along with the SuperSegger filter. The data is 
+filtered using the "stat0" column of SupperSegger (applied in the functions of reading 
+data directly from the .mat file), size filter (excludes very long cells) and the mother
+and daughter filter, which will exclude cells that were born smaller than 40% the mother's
+size or greater than 60% of the mother's size.
+
+    >>> df2d_f,df3d_f,_ = combined_filters(df2d,df3d)
+
+.. note::
+   The function returns a histogram with the effect of the filter on the data and it is
+   possible to adjust some parameters and select whether all filters will be applied.
+
+Hint!
+-----
+
+After loading, concatenating and filtering the data, it is interesting to save them in a 
+".csv" file to optimize the analysis, leaving the original data intact and making data 
+loading faster. For that use:
+
+    >>> import pandas as pd
+    >>> df2d_f.to_csv('/data/"2D_filtered.csv",index=False)
+    >>> df3d_f.to_csv('/data/"3D_filtered.csv",index=False)
