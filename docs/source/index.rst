@@ -20,3 +20,4 @@ Contents
    intrdocution
    api
    data
+   all_func

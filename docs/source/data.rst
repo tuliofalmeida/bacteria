@@ -5,13 +5,17 @@ Data Structure
 
 This section presents the dataframe structure of 2D and 3D data
 
+.. note::
+   stat0 = 0 means no birth was observed, stat0 = 1 means no death/division was observed, 
+   stat0 = 2 means both birth and death were observed.
+
 2D data
 --------
 
  * Cell ID - Unique cell identification
  * Cell birth time - The frame number in which the cell is born (min)
  * Cell age - The total time in which the cell "lived" or was identified
- * stat0 - Indicator of cell birth and division. stat0 = 0 means no birth was observed, stat0 =1 means no death/division was observed, stat0 = 2 means both birth and death were observed.
+ * stat0 - Indicator of cell birth and division.
  * Long axis (L) birth - Length of the long axis of the cell at birth (px)
  * Long axis (L) death - Length of the long axis of the cell at division (px)
  * Short axis birth - Length of the short axis of the cell at birth (px)
@@ -34,6 +38,10 @@ This section presents the dataframe structure of 2D and 3D data
  * Vd-Vb - Volume at division minus Volume at birth (:math:`um^3`)
  * fov - The field of view that this cell belongs to
  * Time Division - "Cell birth time" + "Cell age" (min)
+
+.. note::
+   stat0 = 0 means no birth was observed, stat0 = 1 means no death/division was observed, 
+   stat0 = 2 means both birth and death were observed.
 
 3D data
 --------
