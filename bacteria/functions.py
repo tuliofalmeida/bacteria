@@ -482,116 +482,112 @@ def concatenate_clist(path, fps = 3, filter = True, save_mat = False, path2save 
     return data2D,data3D,gc
 
 def combined_filters(df_2d, df_3d, std = 1, daughter = True, lentgh = True, plot=False):
-	"""
-	Plot the mean fluo for the lineage for the entire experiment.
-	Check also fluor_lineage().
+    """
+    Plot the mean fluo for the lineage for the entire experiment.
+    Check also fluor_lineage().
 
-	Parameters
-	--------------
-	df_2d : DataFrame
-		DataFrame of 2D data
-	df_3d : DataFrame
-		DataFrame of 3D data
-	std : int (optional)
-		Number of standard deviations desired to use as 
-		reference for the cell size filter
+    Parameters
+    --------------
+    df_2d : DataFrame
+        DataFrame of 2D data
+    df_3d : DataFrame
+        DataFrame of 3D data
+    std : int (optional)
+        Number of standard deviations desired to use as 
+        reference for the cell size filter
     daughter : bool (optional)
         If True the daughter filter will be used. If True
         alongised with 'lentgh' the two filters will be used
     lentgh : bool (optional)
         If True the lentgh filter will be used. If True
         alongised with 'daughter' the two filters will be used
-	plot : bool (optional)
-		Plot the histogram pre and pos filter the data
-		
-	Returns
-	--------------
-	df_2d : DataFrame
-		Filtered DataFrame of 2D data
-	df_3d : DataFrame
-		Filtered DataFrame of 3D data
-	gc_filter : nd.array
-		Array with good cells ID after filter
-	"""
-	gc = df_2d[df_2d['stat0'] == 2]['Cell ID'].values
-	wm_cell = [cell for cell in gc if df_2d[df_2d['Cell ID']==cell]['Mother ID'].values in gc]
-	good_daughters = []
-	good_cells_d = []
+    plot : bool (optional)
+        Plot the histogram pre and pos filter the data
+        
+    Returns
+    --------------
+    df_2d : DataFrame
+        Filtered DataFrame of 2D data
+    df_3d : DataFrame
+        Filtered DataFrame of 3D data
+    gc_filter : nd.array
+        Array with good cells ID after filter
+    """
+    gc = df_2d[df_2d['stat0'] == 2]['Cell ID'].values
+    wm_cell = [cell for cell in gc if df_2d[df_2d['Cell ID']==cell]['Mother ID'].values in gc]
+    good_daughters = []
+    good_cells_d = []
 
-	gc_mean_d = np.mean(df_2d['Area death'].values)
-	gc_std_d = np.std(df_2d['Area death'].values)
-	size_ref_d = gc_mean_d + gc_std_d*std
+    gc_mean_d = np.mean(df_2d['Area death'].values)
+    gc_std_d = np.std(df_2d['Area death'].values)
+    size_ref_d = gc_mean_d + gc_std_d*std
 
-	# daughter filter
-	for cell in wm_cell:
-		mae = df_2d[df_2d['Cell ID']==cell]['Mother ID'].values[0]
-		mae_d = df_2d[df_2d['Cell ID']==mae]['Area death'].values[0]
-		filha_b = df_2d[df_2d['Cell ID']==cell]['Area birth'].values[0]
-		if filha_b > .4*mae_d and filha_b < .6*mae_d:
-			good_daughters.append(cell)
+    # daughter filter
+    for cell in wm_cell:
+        mae = df_2d[df_2d['Cell ID']==cell]['Mother ID'].values[0]
+        mae_d = df_2d[df_2d['Cell ID']==mae]['Area death'].values[0]
+        filha_b = df_2d[df_2d['Cell ID']==cell]['Area birth'].values[0]
+        if filha_b > .4*mae_d and filha_b < .6*mae_d:
+            good_daughters.append(cell)
 
-	# lentgh filter
-	for cell in df_2d['Cell ID'].values:
-		if (df_2d[df_2d['Cell ID']==cell]['Area death'].values) < size_ref_d:
-			good_cells_d.append(cell)
-			
-	# combined filters
-	gc_filter = natsorted(list(set(good_cells_d) & set(good_daughters)))
+    # lentgh filter
+    for cell in df_2d['Cell ID'].values:
+        if (df_2d[df_2d['Cell ID']==cell]['Area death'].values) < size_ref_d:
+            good_cells_d.append(cell)
 
-	if plot:
-		fig,ax = plt.subplots(2,2, figsize = (12,8),sharex=True, sharey= True)
-		yx = ax[0][0].hist(df_2d['Area death'], bins=20, range = [0,1000],label = 'Pre-Filter',
-						histtype='stepfilled', facecolor='blue', edgecolor='k');
-		ax[0][0].set_title('Stat0 == 2 - '+ str(len(df_2d['Cell ID'])) + " Cells", fontsize = 17)
-		ax[0][0].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
-		ax[0][0].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
-		ax[0][0].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
-							linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
-		ax[0][0].legend(loc='upper right')
-		
-		ax[0][1].hist(df_2d[df_2d['Cell ID'].isin(gc_filter)]['Area death'], bins=20, range = [0,1000],label = "Combined Filters",
-					histtype='stepfilled', facecolor='yellow', edgecolor='k');
-		ax[0][1].set_title("Combined Filters - "+ str(len(gc_filter)) + " Cells", fontsize = 17)
-		ax[0][1].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
-		ax[0][1].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
-		ax[0][1].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
-							linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
-		ax[0][1].legend(loc='upper right')
+    # combined filters
+    gc_filter = natsorted(list(set(good_cells_d) & set(good_daughters)))
 
-		ax[1][0].hist(df_2d[df_2d['Cell ID'].isin(good_daughters)]['Area death'], bins=20, range = [0,1000],label = "Daughters Filter",
-					histtype='stepfilled', facecolor='green', edgecolor='k');
-		ax[1][0].set_title("Daughters Filter - " + str(len(good_daughters)) + " Cells", fontsize = 17)
-		ax[1][0].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
-		ax[1][0].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
-		ax[1][0].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
-							linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
-		ax[1][0].legend(loc='upper right')
+    if plot:
+        fig,ax = plt.subplots(2,2, figsize = (12,8),sharex=True, sharey= True)
+        yx = ax[0][0].hist(df_2d['Area death'], bins=20, range = [0,1000],label = 'Pre-Filter',histtype='stepfilled', facecolor='blue', edgecolor='k');
+        ax[0][0].set_title('Stat0 == 2 - '+ str(len(df_2d['Cell ID'])) + " Cells", fontsize = 17)
+        ax[0][0].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
+        ax[0][0].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
+        ax[0][0].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
+                            linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
+        ax[0][0].legend(loc='upper right')
 
-		ax[1][1].hist(df_2d[df_2d['Cell ID'].isin(good_cells_d)]['Area death'], bins=20, range = [0,1000],label = "Length Filter",
-					histtype='stepfilled', facecolor='orange', edgecolor='k');
-		ax[1][1].set_title('Length Filter - '+ str(len(good_cells_d)) + " Cells", fontsize = 17)
-		ax[1][1].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
-		ax[1][1].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
-		ax[1][1].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
-							linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
-		ax[1][1].legend(loc='upper right')
+        ax[0][1].hist(df_2d[df_2d['Cell ID'].isin(gc_filter)]['Area death'], bins=20, range = [0,1000],label = "Combined Filters",histtype='stepfilled', facecolor='yellow', edgecolor='k');
+        ax[0][1].set_title("Combined Filters - "+ str(len(gc_filter)) + " Cells", fontsize = 17)
+        ax[0][1].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
+        ax[0][1].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
+        ax[0][1].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
+                            linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
+        ax[0][1].legend(loc='upper right')
 
-		fig.supxlabel('Division size (px)', fontsize = 15)
-		fig.supylabel('Number of cells', fontsize = 15)
-		plt.tight_layout()
+        ax[1][0].hist(df_2d[df_2d['Cell ID'].isin(good_daughters)]['Area death'], bins=20, range = [0,1000],label = "Daughters Filter",histtype='stepfilled', facecolor='green', edgecolor='k');
+        ax[1][0].set_title("Daughters Filter - " + str(len(good_daughters)) + " Cells", fontsize = 17)
+        ax[1][0].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
+        ax[1][0].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
+        ax[1][0].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
+                            linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
+        ax[1][0].legend(loc='upper right')
 
-	# Filters
-	if daughter == True and lentgh == True:
-		gc_filter = natsorted(list(set(good_cells_d) & set(good_daughters)))
-	elif daughter == True and lentgh == False:
-		gc_filter = natsorted(set(good_daughters))
-	elif lentgh == False and lentgh == True:
-		gc_filter = natsorted(set(good_cells_d))
-		
-	df_3d = df_3d[df_3d['Cell ID'].isin(gc_filter)]
-	df_2d = df_2d[df_2d['Cell ID'].isin(gc_filter)]
+        ax[1][1].hist(df_2d[df_2d['Cell ID'].isin(good_cells_d)]['Area death'], bins=20, range = [0,1000],label = "Length Filter",histtype='stepfilled', facecolor='orange', edgecolor='k');
+        ax[1][1].set_title('Length Filter - '+ str(len(good_cells_d)) + " Cells", fontsize = 17)
+        ax[1][1].axvline(size_ref_d, linestyle='-', color='red',label = 'Size ref')
+        ax[1][1].axvline(gc_mean_d, linestyle='-', color='k',label = 'Pre-Filter Mean')
+        ax[1][1].fill_between(np.arange(gc_mean_d-gc_std_d,gc_mean_d+gc_std_d,20),max(yx[0]),
+                            linestyle='--', color='k',label = 'Pre-Filter Std', alpha = .1)
+        ax[1][1].legend(loc='upper right')
 
-	return df_2d,df_3d,np.asarray(gc_filter)
+        fig.supxlabel('Division size (px)', fontsize = 15)
+        fig.supylabel('Number of cells', fontsize = 15)
+        plt.tight_layout()
+
+    # Filters
+    if daughter == True and lentgh == True:
+        gc_filter = natsorted(list(set(good_cells_d) & set(good_daughters)))
+    elif daughter == True and lentgh == False:
+        gc_filter = natsorted(set(good_daughters))
+    elif lentgh == False and lentgh == True:
+        gc_filter = natsorted(set(good_cells_d))
+
+    df_3d = df_3d[df_3d['Cell ID'].isin(gc_filter)]
+    df_2d = df_2d[df_2d['Cell ID'].isin(gc_filter)]
+
+    return df_2d,df_3d,np.asarray(gc_filter)
 
 def plot_2d_data(df_2d):
 	"""
@@ -1405,7 +1401,11 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
         [volume,fluor,time,F/V and all derivatives] 
         of each cell at the slide window (cell number = key).
     """
-    from tqdm.notebook import tqdm
+    import sys
+    if 'tqdm' in sys.modules:
+        from tqdm.notebook import tqdm
+    else:
+        bar = False
     if column == 'Volume':
         df_dev = pd.melt(df_3d, id_vars=['Cell ID','Time (fps)','F/V'], value_vars=[column]).sort_values(by=['Cell ID','Time (fps)'])
     else:
