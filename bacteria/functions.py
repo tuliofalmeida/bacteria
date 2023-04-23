@@ -1331,7 +1331,7 @@ def simple_bootstrap(arr, conf = 0.95,times = 10000):
     
     return ci_low,ci_high
 
-def progressbar(it, prefix="", size=60, out=sys.stdout):
+def _progressbar(it, prefix="", size=60, out=sys.stdout):
     """
     Binarize the data and make the mean for each bin.
     Suport function for fluor_lineage(). Bins are
