@@ -1,8 +1,8 @@
 Metadata-Version: 2.1
 Name: bacteria
-Version: 0.1.1
+Version: 0.1.2
 Summary: Super Segger Analysis in Python.
-Home-page: https://github.com/tuliofalmeida/bacteria
+Home-page: https://bacteria.readthedocs.io
 License: MIT
 Download-URL: https://github.com/tuliofalmeida/bacteria
 Keywords: Data analysis,Cell analysis,Bacteria,SuperSegger

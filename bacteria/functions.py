@@ -1402,7 +1402,6 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
         [volume,fluor,time,F/V and all derivatives] 
         of each cell at the slide window (cell number = key).
     """
-    from tqdm.notebook import tqdm
     # import sys
     # if 'tqdm' in sys.modules:
     #     print()
@@ -1421,6 +1420,7 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
     count = 0
 
     if bar:
+        from tqdm.notebook import tqdm
         for idx in tqdm(range(len(cells))):
             cell = cells[count]
             count += 1
