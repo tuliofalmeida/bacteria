@@ -10,6 +10,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 # from IPython import display
+from tqdm import tqdm
 from scipy.stats import sem
 from natsort import natsorted # pip install natsort
 from datetime import date,timedelta
@@ -1402,12 +1403,6 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
         [volume,fluor,time,F/V and all derivatives] 
         of each cell at the slide window (cell number = key).
     """
-    # import sys
-    # if 'tqdm' in sys.modules:
-    #     print()
-    #     from tqdm.notebook import tqdm
-    # else:
-    #     bar = False
     if column == 'Volume':
         df_dev = pd.melt(df_3d, id_vars=['Cell ID','Time (fps)','F/V'], value_vars=[column]).sort_values(by=['Cell ID','Time (fps)'])
     else:
@@ -1420,7 +1415,6 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
     count = 0
 
     if bar:
-        from tqdm.notebook import tqdm
         for idx in tqdm(range(len(cells))):
             cell = cells[count]
             count += 1
@@ -3210,7 +3204,11 @@ def diff_minima(df_3d,df_2d,order = 3,pre = None,pos = None, adjust = False):
     else:
         for_range = 2
 
-    for cell in natsorted(df_2d['Cell ID'].values):
+    cells = natsorted(df_2d['Cell ID'].values)
+    count = 0
+    for idx in tqdm(range(len(cells))):
+        cell = cells[count]
+        count +=1
         temp_order = order
         daughter_cell1 = df_2d[df_2d['Cell ID']==cell]['Daughter1 ID'].values[0]
         daughter_cell2 = df_2d[df_2d['Cell ID']==cell]['Daughter2 ID'].values[0]
@@ -3281,7 +3279,7 @@ def diff_minima(df_3d,df_2d,order = 3,pre = None,pos = None, adjust = False):
 
     return vol_dict
 
-def plot_diff_minima(vol_dict,key = None, ax = None):
+def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color_pos = 'red',ax = None):
     """
     Function to plot the difference between the minimas.
     The function will plot the 'pre' and 'pos' moments
@@ -3303,6 +3301,15 @@ def plot_diff_minima(vol_dict,key = None, ax = None):
     key : str (optional)
         key used to plot just one moment, 'all', 'pre'
         or 'por'
+    color : str (optional)
+        color to plot the cloud and the histogram of 
+        'all' data
+    color_pre : str (optional)
+        color to plot the cloud and the histogram of 
+        'pre' data
+    color_pos : str (optional)
+        color to plot the cloud and the histogram of 
+        'pos' data
     ax : nd.array (optional)
         the ax position to plot
 
@@ -3336,7 +3343,7 @@ def plot_diff_minima(vol_dict,key = None, ax = None):
             ax[1].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
         else:
             out = []
-            out.append(ax.plot(vol_dict[key]['min'],vol_dict[key]['diff'],'.'))
+            out.append(ax.plot(vol_dict[key]['min'],vol_dict[key]['diff'],'.'),color= color)
             out.append(ax.plot(vol_dict[key]['min'],model.predict(np.asarray(vol_dict[key]['min']).reshape(len(vol_dict[key]['min']), 1)),
                         'gray',label = 'Coef: ' + str(model.coef_[0])[:5]))
             out.append(ax.set_title('{} the time'.format(key.capitalize()),fontsize = 17))
@@ -3354,7 +3361,7 @@ def plot_diff_minima(vol_dict,key = None, ax = None):
             model.fit(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1),
                     np.asarray(vol_dict['all']['diff']).reshape(len(vol_dict['all']['diff'])))
 
-            ax[0].plot(vol_dict['all']['min'],vol_dict['all']['diff'],'.')
+            ax[0].plot(vol_dict['all']['min'],vol_dict['all']['diff'],'.',color = color)
             ax[0].plot(vol_dict['all']['min'],model.predict(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1)),
                     'gray',label = 'Coef: ' + str(model.coef_[0])[:5])
             ax[0].set_title('All the time',fontsize = 17)
@@ -3364,7 +3371,7 @@ def plot_diff_minima(vol_dict,key = None, ax = None):
             ax[0].set_xlim(.5,5.5)
             ax[0].legend()
             
-            ax[1].hist(vol_dict['all']['diff'])
+            ax[1].hist(vol_dict['all']['diff'],color=color)
             ax[1].set_title('All the time Histogram',fontsize = 17)
             ax[1].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)	 
         else:
@@ -3375,59 +3382,59 @@ def plot_diff_minima(vol_dict,key = None, ax = None):
             model.fit(np.asarray(vol_dict['pre']['min']).reshape(len(vol_dict['pre']['min']), 1),
                     np.asarray(vol_dict['pre']['diff']).reshape(len(vol_dict['pre']['diff'])))
 
-            ax[0][0].plot(vol_dict['pre']['min'],vol_dict['pre']['diff'],'.',color = 'k')
+            ax[0][1].plot(vol_dict['pre']['min'],vol_dict['pre']['diff'],'.',color = color_pre)
             ax[0][0].plot(vol_dict['pre']['min'],model.predict(np.asarray(vol_dict['pre']['min']).reshape(len(vol_dict['pre']['min']), 1)),
                     'gray',label = 'Pre Coef: ' + str(model.coef_[0])[:5])
-            ax[0][0].set_title('Pre {} min'.format(vol_dict['order']['pre']),fontsize = 17)
-            ax[0][0].set_ylabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
-            ax[0][0].set_xlabel(r'Volume minima [$\mu m^3$]',fontsize = 15)
-            ax[0][0].set_ylim(0,5)
-            ax[0][0].set_xlim(.5,5.5)
-            ax[0][0].legend()
-
-            ax[1][0].hist(vol_dict['pre']['diff'],color = 'k')
-            ax[1][0].set_title('Pre {} Histogram'.format(vol_dict['order']['pre']),fontsize = 17)
-            ax[1][0].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
-            y_min.append(ax[1][0].get_ylim()[0])
-            y_max.append(ax[1][0].get_ylim()[1])
-
-            model = LinearRegression()
-            model.fit(np.asarray(vol_dict['pos']['min']).reshape(len(vol_dict['pos']['min']), 1),
-                    np.asarray(vol_dict['pos']['diff']).reshape(len(vol_dict['pos']['diff'])))
-
-            ax[0][1].plot(vol_dict['pos']['min'],vol_dict['pos']['diff'],'.',color = 'red')
-            ax[0][1].plot(vol_dict['pos']['min'],model.predict(np.asarray(vol_dict['pos']['min']).reshape(len(vol_dict['pos']['min']), 1)),
-                    'gray',label = 'Pos Coef: ' + str(model.coef_[0])[:5])
-            ax[0][1].set_title('Pos {} min'.format(vol_dict['order']['pos']),fontsize = 17)
+            ax[0][1].set_title('Pre {} min'.format(vol_dict['order']['pre']),fontsize = 17)
+            ax[0][1].set_ylabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
             ax[0][1].set_xlabel(r'Volume minima [$\mu m^3$]',fontsize = 15)
             ax[0][1].set_ylim(0,5)
             ax[0][1].set_xlim(.5,5.5)
             ax[0][1].legend()
 
-            ax[1][1].hist(vol_dict['pos']['diff'],color = 'red')
-            ax[1][1].set_title('Pos {} Histogram'.format(vol_dict['order']['pos']),fontsize = 17)
+            ax[1][1].hist(vol_dict['pre']['diff'],color = color_pre)
+            ax[1][1].set_title('Pre {} Histogram'.format(vol_dict['order']['pre']),fontsize = 17)
             ax[1][1].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
             y_min.append(ax[1][1].get_ylim()[0])
             y_max.append(ax[1][1].get_ylim()[1])
 
             model = LinearRegression()
-            model.fit(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1),
-                    np.asarray(vol_dict['all']['diff']).reshape(len(vol_dict['all']['diff'])))
+            model.fit(np.asarray(vol_dict['pos']['min']).reshape(len(vol_dict['pos']['min']), 1),
+                    np.asarray(vol_dict['pos']['diff']).reshape(len(vol_dict['pos']['diff'])))
 
-            ax[0][2].plot(vol_dict['all']['min'],vol_dict['all']['diff'],'.')
-            ax[0][2].plot(vol_dict['all']['min'],model.predict(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1)),
-                    'gray',label = 'Coef: ' + str(model.coef_[0])[:5])
-            ax[0][2].set_title('All the time',fontsize = 17)
+            ax[0][2].plot(vol_dict['pos']['min'],vol_dict['pos']['diff'],'.',color = color_pos)
+            ax[0][2].plot(vol_dict['pos']['min'],model.predict(np.asarray(vol_dict['pos']['min']).reshape(len(vol_dict['pos']['min']), 1)),
+                    'gray',label = 'Pos Coef: ' + str(model.coef_[0])[:5])
+            ax[0][2].set_title('Pos {} min'.format(vol_dict['order']['pos']),fontsize = 17)
             ax[0][2].set_xlabel(r'Volume minima [$\mu m^3$]',fontsize = 15)
             ax[0][2].set_ylim(0,5)
             ax[0][2].set_xlim(.5,5.5)
             ax[0][2].legend()
 
-            ax[1][2].hist(vol_dict['all']['diff'])
-            ax[1][2].set_title('All the time Histogram',fontsize = 17)
+            ax[1][2].hist(vol_dict['pos']['diff'],color = color_pre)
+            ax[1][2].set_title('Pos {} Histogram'.format(vol_dict['order']['pos']),fontsize = 17)
             ax[1][2].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
             y_min.append(ax[1][2].get_ylim()[0])
             y_max.append(ax[1][2].get_ylim()[1])
+
+            model = LinearRegression()
+            model.fit(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1),
+                    np.asarray(vol_dict['all']['diff']).reshape(len(vol_dict['all']['diff'])))
+
+            ax[0][0].plot(vol_dict['all']['min'],vol_dict['all']['diff'],'.',color = color)
+            ax[0][0].plot(vol_dict['all']['min'],model.predict(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1)),
+                    'gray',label = 'Coef: ' + str(model.coef_[0])[:5])
+            ax[0][0].set_title('All the time',fontsize = 17)
+            ax[0][0].set_xlabel(r'Volume minima [$\mu m^3$]',fontsize = 15)
+            ax[0][0].set_ylim(0,5)
+            ax[0][0].set_xlim(.5,5.5)
+            ax[0][0].legend()
+
+            ax[1][0].hist(vol_dict['all']['diff'],color = color)
+            ax[1][0].set_title('All the time Histogram',fontsize = 17)
+            ax[1][0].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
+            y_min.append(ax[1][0].get_ylim()[0])
+            y_max.append(ax[1][0].get_ylim()[1])
 
             ax[1][0].set_ylim(min(y_min),max(y_max)+100)
             ax[1][1].set_ylim(min(y_min),max(y_max)+100)
