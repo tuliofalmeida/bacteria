@@ -7,7 +7,7 @@ with open("README.rst", "r") as fh:
 setuptools.setup(
     name = 'bacteria',         
     packages = ['bacteria'],   
-    version = '0.1.3',      
+    version = '0.1.4',      
     license='MIT',       
     description = 'Super Segger Analysis in Python.',
     long_description_content_type="text/x-rst",
@@ -22,6 +22,7 @@ setuptools.setup(
             'seaborn',
             'natsort',
             'anytree',
+            'tqdm',
             # 'matlabengine',
             'scipy'
         ],
