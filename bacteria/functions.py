@@ -129,6 +129,9 @@ def _volume(df,const = 0.1067):
     --------------
     df : DataFrame
         df from 3D data 
+    const : float (optional)
+        parameter extracted from the microscope to transform
+        pixel to micrometers
         
     Returns
     --------------
@@ -156,7 +159,10 @@ def _volume2d(df2d,const = 0.1067):
     --------------
     df : DataFrame
         df from 2D data 
-        
+    const : float (optional)
+        parameter extracted from the microscope to transform
+        pixel to micrometers
+
     Returns
     --------------
     df : pandas DataFrame
@@ -238,7 +244,7 @@ def cell_cycle(df, good_cells = None):
 
     return df
 
-def df_data3d(data, fps = 3, filters = True, comp = False):
+def df_data3d(data, fps = 3, filters = True, const = 0.1067,comp = False):
     """
     Create a pandas DataFrame of the 2D data using the headers pre-determined. 
     
@@ -250,6 +256,9 @@ def df_data3d(data, fps = 3, filters = True, comp = False):
         Frames per second used in the experiment, usual 3
     filters : bool (optional)
         Filter data based on data2d['stat0'] = 2 and non NaN's
+    const : float (optional)
+        parameter extracted from the microscope to transform
+        pixel to micrometers
     comp : bool
         Input data are the compiled clists (clist for all xy/fovs)
         
@@ -295,11 +304,11 @@ def df_data3d(data, fps = 3, filters = True, comp = False):
     # remove trailing space
     df.columns = df.columns.str.rstrip()
 
-    df = _volume(df)
+    df = _volume(df,const = const)
     
     return df,gc
 
-def df_data2d(data, fps = 3, comp = False):
+def df_data2d(data, fps = 3,const = 0.1067, comp = False):
     """
     Create a pandas DataFrame of the 2D data using the headers pre-determined. 
     
@@ -309,6 +318,9 @@ def df_data2d(data, fps = 3, comp = False):
         Supersegger clist already loaded
     fps: int (optional)
         Frames per second used in the experiment, usual 3
+    const : float (optional)
+        parameter extracted from the microscope to transform
+        pixel to micrometers
     comp : bool
         Input data are the compiled clists (clist for all xy/fovs)
         
@@ -339,7 +351,7 @@ def df_data2d(data, fps = 3, comp = False):
     df['Cell age'] = df['Cell age'] * fps
 
     # add the volume columns
-    df = _volume2d(df)
+    df = _volume2d(df,const = const)
 
     if comp:
         off_sets , intervals = _off_set(df)
@@ -380,7 +392,7 @@ def _good_cells(data, fps = 3, comp = False):
 
     return good_cells
 
-def concatenate_clist(path, fps = 3, filters = True, save_mat = False, path2save = None , direct = False):
+def concatenate_clist(path, fps = 3, filters = True, save_mat = False, path2save = None , const = 0.1067 , direct = False):
     """
     Concatenate all c_list.mat from one experiment in DataFrames.
     
@@ -397,6 +409,9 @@ def concatenate_clist(path, fps = 3, filters = True, save_mat = False, path2save
     path2save : str (optional)
         If false, the data will be saved into the current directory
         else, should pass a path to save.
+    const : float (optional)
+        parameter extracted from the microscope to transform
+        pixel to micrometers
     direct : bool
         If you have all the clists in one folder.
         
@@ -419,8 +434,8 @@ def concatenate_clist(path, fps = 3, filters = True, save_mat = False, path2save
 
     for idx,mat in enumerate(paths_xy,1):
         data_temp = scipy.io.loadmat(mat)
-        data2D_temp = df_data2d(data_temp,fps)
-        data3D_temp,_ = df_data3d(data_temp,fps,False)
+        data2D_temp = df_data2d(data_temp,fps=fps, const=const)
+        data3D_temp,_ = df_data3d(data_temp,fps = fps, filter = False, const = const)
 
         if direct:
             data2D_temp['fov'] = 'xy' + str(idx)
@@ -2763,7 +2778,7 @@ def lineage_corr_filter(df_3d,reverse_lineages,shift = None,threshold = .96,colu
 
     return filtered_lineage
 
-def plot_lineage_derivative(df_lineage,peaks,column = 'Fluor1 sum',derivative_column = 'Derivative',x_axis = 'Smoothed Volume',ax = None):
+def plot_lineage_derivative(df_lineage,peaks,column = 'Fluor1 sum',derivative_column = 'Derivative/V',x_axis = 'Smoothed Volume',ax = None):
     """
     Plot a single lineages derivative with the
     local minima and local maxmia. The input parameters
@@ -3145,7 +3160,7 @@ def plot_distance_minima_lineage(df_3d,df_2d,lineages_list,order=9,ax = None):
 
         return out
 
-def diff_minima(df_3d,df_2d,order = 3,pre = None,pos = None, adjust = False):
+def diff_minima(df_3d,df_2d,derivative_column = 'Derivative/V',order = 3,pre = None,pos = None, adjust = False):
     """
     Function to plot the distance between the minimas of
     the daughter and mother by the mothe volume. The 'pre' 
@@ -3164,6 +3179,12 @@ def diff_minima(df_3d,df_2d,order = 3,pre = None,pos = None, adjust = False):
         DataFrame of 3D data
     df_2d : DataFrame
         DataFrame of 2D data
+    derivative_column : str (optional)
+        Derivative column to bin. Columns: 'Derivative',
+        'Derivative/V' is the derivative normalized by 
+        volume, 'Log Derivative' logarithm of the derivative,
+        'Log Derivative/V' logarithm of the derivative
+        normalized by volume. Default is 'Derivative/V'.
     order : int (optional)
         The order of the polynomial used to fit the 
         savgol_filter from scipy in 'lineage_derivative()'
@@ -3216,7 +3237,7 @@ def diff_minima(df_3d,df_2d,order = 3,pre = None,pos = None, adjust = False):
         if len(df_3d[df_3d['Cell ID']==daughter_cell1]) > 0:
             for attempt in range(for_range):
                 try:            
-                    df,peaks,_= lineage_derivative(df_3d,[cell,daughter_cell1],order = temp_order)
+                    df,peaks,_= lineage_derivative(df_3d,[cell,daughter_cell1],order = temp_order,derivative_column=derivative_column)
                     vol_dict['order'][cell] = temp_order
                     if 0 not in list(peaks['minima'].values()):
                         temp = df['Smoothed Volume'].values[list(peaks['minima'].values())]
@@ -3246,7 +3267,7 @@ def diff_minima(df_3d,df_2d,order = 3,pre = None,pos = None, adjust = False):
         elif len(df_3d[df_3d['Cell ID']==daughter_cell2]) > 0:
             for attempt in range(for_range):
                 try:
-                    df,peaks,_= lineage_derivative(df_3d,[cell,daughter_cell2],order = temp_order)
+                    df,peaks,_= lineage_derivative(df_3d,[cell,daughter_cell2],order = temp_order,derivative_column=derivative_column)
                     vol_dict['order'][cell] = temp_order
                     if 0 not in list(peaks['minima'].values()):
                         temp = df['Smoothed Volume'].values[list(peaks['minima'].values())]
@@ -3300,16 +3321,16 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
         of 'diff_minima()'.
     key : str (optional)
         key used to plot just one moment, 'all', 'pre'
-        or 'por'
+        or 'pos'
     color : str (optional)
         color to plot the cloud and the histogram of 
         'all' data
     color_pre : str (optional)
         color to plot the cloud and the histogram of 
-        'pre' data
+        'pre' data, default 'black'
     color_pos : str (optional)
         color to plot the cloud and the histogram of 
-        'pos' data
+        'pos' data, default 'red'
     ax : nd.array (optional)
         the ax position to plot
 
@@ -3336,6 +3357,7 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
             ax[0].legend()
             
             ax[1].hist(vol_dict[key]['diff'])
+            ax[1].set_xlim(.5,5.5)
             if key == 'all':
                 ax[1].set_title('{} the time'.format(key.capitalize()),fontsize = 17)
             else:
@@ -3383,10 +3405,9 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
                     np.asarray(vol_dict['pre']['diff']).reshape(len(vol_dict['pre']['diff'])))
 
             ax[0][1].plot(vol_dict['pre']['min'],vol_dict['pre']['diff'],'.',color = color_pre)
-            ax[0][0].plot(vol_dict['pre']['min'],model.predict(np.asarray(vol_dict['pre']['min']).reshape(len(vol_dict['pre']['min']), 1)),
+            ax[0][1].plot(vol_dict['pre']['min'],model.predict(np.asarray(vol_dict['pre']['min']).reshape(len(vol_dict['pre']['min']), 1)),
                     'gray',label = 'Pre Coef: ' + str(model.coef_[0])[:5])
             ax[0][1].set_title('Pre {} min'.format(vol_dict['order']['pre']),fontsize = 17)
-            ax[0][1].set_ylabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
             ax[0][1].set_xlabel(r'Volume minima [$\mu m^3$]',fontsize = 15)
             ax[0][1].set_ylim(0,5)
             ax[0][1].set_xlim(.5,5.5)
@@ -3411,7 +3432,7 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
             ax[0][2].set_xlim(.5,5.5)
             ax[0][2].legend()
 
-            ax[1][2].hist(vol_dict['pos']['diff'],color = color_pre)
+            ax[1][2].hist(vol_dict['pos']['diff'],color = color_pos)
             ax[1][2].set_title('Pos {} Histogram'.format(vol_dict['order']['pos']),fontsize = 17)
             ax[1][2].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
             y_min.append(ax[1][2].get_ylim()[0])
@@ -3425,6 +3446,7 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
             ax[0][0].plot(vol_dict['all']['min'],model.predict(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1)),
                     'gray',label = 'Coef: ' + str(model.coef_[0])[:5])
             ax[0][0].set_title('All the time',fontsize = 17)
+            ax[0][0].set_ylabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
             ax[0][0].set_xlabel(r'Volume minima [$\mu m^3$]',fontsize = 15)
             ax[0][0].set_ylim(0,5)
             ax[0][0].set_xlim(.5,5.5)
