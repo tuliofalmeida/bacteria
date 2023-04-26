@@ -27,6 +27,8 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 
 ## Running the pipeline
 
+This is a step by step guide to using the pipeline after installation, but before you run your data read the section "Before you start".
+
 1. Open python terminal and navigate to the folder _pipeline_ (_cd_ command [tutorial](https://fernando-mc.github.io/python3-workshop/navigating-with-a-terminal.html))
 2. Run the following code
 ```python
@@ -78,9 +80,9 @@ This is an internal SuperSegger function to align all frames with the first fram
 * Input 0: SuperSegger will not align images 
 * Input 1: SuperSegger will align the images 
 
-7. After that the pipeline will start processing the images, look at the Common Problems section
+7. After that the pipeline will start processing the images (Check the section Before you start)
 
-## Common Problems
+## Before you start!
 
 
 
