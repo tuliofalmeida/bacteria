@@ -5,7 +5,7 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 ## Requirements
 
 1. Python  (extensively tested in version 3.9)
-1.1 Anaconda
-1.1.1 Omnipose instaled
+ *1.1 Anaconda
+ *1.1.1 Omnipose
 2. MATLAB (extensively tested on version R2022b, but should work with compatible versions of python 3.9+)
 2.1. (SuperSegger-Omnipose)[https://github.com/tlo-bot/supersegger-omnipose]  
