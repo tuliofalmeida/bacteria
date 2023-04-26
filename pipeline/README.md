@@ -78,6 +78,10 @@ This is an internal SuperSegger function to align all frames with the first fram
 * Input 0: SuperSegger will not align images 
 * Input 1: SuperSegger will align the images 
 
+7. After that the pipeline will start processing the images, look at the Common Problems section
+
+## Common Problems
+
 
 
 
