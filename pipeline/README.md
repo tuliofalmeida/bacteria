@@ -17,7 +17,7 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 ## Installation
 
 1. Install [Omnipose](https://github.com/kevinjohncutler/omnipose) (check their tutorial)
-2. Inside the Omnipose environment you should install the matlabengine
+2. Inside the Omnipose environment you should install the matlabengine `pip install matlabengine`
 3. Clone [SuperSegger](https://github.com/tlo-bot/supersegger-omnipose) repo and add it into your MATLAB [path - Add folder and subfolders](https://fr.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html)
 4. Configure [Python inside MATLAB](https://fr.mathworks.com/help/matlab/matlab_external/install-supported-python-implementation.html)
 5. Add the scripts _pipeline.m,pipeline2.m_ and _pipelineSeg.m_ in the _batch_ folder
