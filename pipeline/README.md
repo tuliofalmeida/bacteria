@@ -46,10 +46,11 @@ Chose the code to run:
 3 - To see the documentation
 """
 ```
-* Input 0: Run the Pipeline for one Field of View (FOV) - One folder with images (FOV).
-* Input 1: Run the Pipeline for multiple Field of Views (FOV's) - One folder (Experiment) with other folders (FOV's) with images.
-* Input 2: Run the Pipeline for multiple experiments - One folder (All data) with other folders (Experiments) with folders (FOV's) with images.
-* Input 3: Will print the documentation in the terminal.
+  * Input 0: Run the Pipeline for one Field of View (FOV) - One folder with images (FOV).
+  * Input 1: Run the Pipeline for multiple Field of Views (FOV's) - One folder (Experiment) with other folders (FOV's) with images.
+  * Input 2: Run the Pipeline for multiple experiments - One folder (All data) with other folders (Experiments) with folders (FOV's) with images.
+  * Input 3: Will print the documentation in the terminal.
+
 4. After choosing the routine, you will need to pass the folder path:
 ```python
 """
@@ -64,8 +65,9 @@ You should pass as example: /home/documents/experiment_test/ (don't need to add 
 Format images (0 = No, 1 = Yes): 
 """
 ```
-* Input 0: It will not format the images, they should already be organized with the two separate channels and with the names following the SuperSegger pattern.
-* Input 1: The pipeline will modify the name of the file according to SuperSegger and will duplicate the images in channel 1 and channel 2 (it is doing this automatically because we do not have the data in contract phase, only fluorescence. This can be changed from the parameter _'double'_ to _False_, in the function _format_images()_ in the file _functions.py_).
+  * Input 0: It will not format the images, they should already be organized with the two separate channels and with the names following the SuperSegger pattern.
+  * Input 1: The pipeline will modify the name of the file according to SuperSegger and will duplicate the images in channel 1 and channel 2 (it is doing this automatically because we do not have the data in contract phase, only fluorescence. This can be changed from the parameter _'double'_ to _False_, in the function _format_images()_ in the file _functions.py_).
+
 <details>
   <summary>If you have more than one fluorescence channel!</summary>
 You will have to modify this function, it is possible to use the same logical structure, continuing to fold the image with GFP and adding a line with a condition and just change the name of the mCherry images to channel 3 (variable "ref_cherry" in function _format_image()_).</details>
@@ -77,8 +79,9 @@ Align images to the first (0 = No, 1 = Yes):
 """
 ```
 This is an internal SuperSegger function to align all frames with the first frame (or you can change the frame to align in SuperSegger's settings in the _loadConstants_pipeline.m_ file). We didn't perform extensive tests for this parameter, but we got slightly better results aligning the images.
-* Input 0: SuperSegger will not align images 
-* Input 1: SuperSegger will align the images 
+
+  * Input 0: SuperSegger will not align images 
+  * Input 1: SuperSegger will align the images 
 
 7. After that the pipeline will start processing the images (Check the section Before you start)
 
