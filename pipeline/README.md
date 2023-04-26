@@ -11,7 +11,7 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 2. [MATLAB](https://fr.mathworks.com/products/matlab.html) (extensively tested on version R2022b, but the version must be with compatible python 3.9 our earlier)
    * [SuperSegger-Omnipose](https://github.com/tlo-bot/supersegger-omnipose)
 3. [matlabengine](https://pypi.org/project/matlabengine/) (version that match with your Python and MATLAB)
-4. Download the Python and MATLAB scripts here LINK (you can do this cloning this repo, also check the Installation topic)
+4. Download the Python and MATLAB scripts here **LINK** (you can do this cloning this repo, also check the Installation topic)
 5. OS, the pipeline should work on Windows and Linux (extensively tested in Ubuntu 20.04.5 LTS) 
 
 
