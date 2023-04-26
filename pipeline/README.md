@@ -6,6 +6,7 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 
 1. Python  (extensively tested in version 3.9)
    * Anaconda
-   * Omnipose
+   * [Omnipose](https://github.com/kevinjohncutler/omnipose)
 2. MATLAB (extensively tested on version R2022b, but should work with compatible versions of python 3.9+)
-2.1. (SuperSegger-Omnipose)[https://github.com/tlo-bot/supersegger-omnipose]  
+   * [SuperSegger-Omnipose](https://github.com/tlo-bot/supersegger-omnipose)
+3. [matlabengine](https://pypi.org/project/matlabengine/) (version that mach with your Python and MATLAB)
