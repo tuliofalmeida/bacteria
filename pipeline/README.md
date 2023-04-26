@@ -1,6 +1,6 @@
 # Pipeline Documentation
 
-This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python. The pipeline transitions SuperSegger(MATLAB) -> Omnipose (Python) -> SuperSegger (MATLAB) automatically.
+This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python. The pipeline transitions SuperSegger(MATLAB) -> Omnipose (Python) -> SuperSegger (MATLAB) automatically. The pipeline has 3 routines, which allow you to analyze only one FOV, analyze multiple FOV (of the same experiment or not, it will analyze all FOV in the folder) and analyze multiple experiments.
 
 ## Requirements
 
