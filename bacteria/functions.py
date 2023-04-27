@@ -1063,66 +1063,6 @@ def ci_bootstrap(arr, conf = 0.95, method = np.mean, plot= False):
 
     return ci_low,ci_high
 
-def instantaneous_measuraments(df,good_cells, column, fps = 3, minus = 1, plus = 2):
-    """
-    Calculate the instantaneous mesasurament for each cell 
-    in the dataset using a window of 3 data points. 
-    
-    Parameters
-    --------------
-    df : DataFrame
-        DataFrame of 3D data
-    good_cells : nd.array
-        array with good cells (output of df_data3d() )
-    column = str
-        df column that you want to calculate
-    fps : int (optional)
-        frames per second used in the experiment
-    minus : int
-        value to change the window to the convolution
-        to adapt the range for the loop 
-        (e.g, default = i in range(1,len(x)-2))
-    plus : int
-        value to change the window to the convolution
-        to adapt the range for the loop 
-        (e.g, default = i in range(1,len(x)-2))
-        
-    Returns
-    --------------
-    im : nd.array
-        growth rate for each cell
-    time : nd.array
-        time array in fps
-    """
-    gr_inst = {}
-    time_dict = {}
-    for cell in good_cells:
-        y = np.log(df[df['Cell ID']==cell][column].values)
-        x = df[df['Cell ID']==cell]['Time (fps)'].values
-        gr_temp = []
-        t_temp = []
-        for i in range(minus,len(x)-plus):
-            model = LinearRegression()
-            if plus == 0 and minus == 0:
-                model.fit(x.reshape(len(x), 1), y.reshape(len(y)))
-            else:
-                x_temp = x[i-minus:i+plus]
-                y_temp = y[i-minus:i+plus]
-                model.fit(x_temp.reshape(len(x_temp), 1), y_temp.reshape(len(y_temp)))
-            gr_temp.append(model.coef_[0])
-            t_temp.append(x[i])
-        gr_inst[cell] = np.array(gr_temp)
-        time_dict[cell] = np.array(t_temp)
-
-    times = np.arange(df['Time (fps)'].min(),df['Time (fps)'].max()+fps,fps)
-    im = np.zeros((len(gr_inst),len(times)))
-
-    for idx,cell in enumerate(good_cells):
-        for _,data in enumerate(zip(time_dict[cell],gr_inst[cell])):
-            im[idx,np.where(times==data[0])[0][0]] = data[1]
-
-    return im,times
-
 def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
     """
     Calculate the derivatine of the fluor sum using
@@ -1171,7 +1111,7 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
             cell = cells[count]
             count += 1
             time_frames = df_dev[(df_dev['Cell ID'] == cell) & (df_dev['Time (fps)'])]['Time (fps)'].values
-            vol,deriv,deriv_log,deriv_norm,deriv_log_norm,time,ratio = [],[],[],[],[],[],[]
+            vol,deriv,deriv_log,deriv_norm,deriv_log_norm,times,ratio = [],[],[],[],[],[],[]
             model_deriv = LinearRegression()
             model_deriv_log = LinearRegression()
 
@@ -1192,7 +1132,7 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
 
                 deriv.append(model_deriv.coef_[0])
                 deriv_log.append(model_deriv_log.coef_[0])
-                time.append(time_frames[i])
+                times.append(time_frames[i])
                 ratio.append(df_dev[df_dev['Cell ID'] == cell]['F/V'].values[i])
             
             vol_dict[cell] = np.array(vol)
@@ -1200,15 +1140,15 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
             dev_dict_norm[cell] = np.array(deriv_norm) 
             dev_dict_log[cell] = np.array(deriv_log)
             dev_dict_log_norm[cell] = np.array(deriv_log_norm)
-            time_dict[cell] = np.array(time)
+            time_dict[cell] = np.array(times)
             ratio_dict[cell] = np.asarray(ratio)
-            bin_dict[cell] = pre.MinMaxScaler((0,1)).fit_transform(np.arange(0,len(time),1).reshape(-1, 1)).flatten()
+            bin_dict[cell] = pre.MinMaxScaler((0,1)).fit_transform(np.arange(0,len(times),1).reshape(-1, 1)).flatten()
     else:
         for idx in range(len(cells)):
             cell = cells[count]
             count += 1
             time_frames = df_dev[(df_dev['Cell ID'] == cell) & (df_dev['Time (fps)'])]['Time (fps)'].values
-            vol,deriv,deriv_log,deriv_norm,deriv_log_norm,time,ratio = [],[],[],[],[],[],[]
+            vol,deriv,deriv_log,deriv_norm,deriv_log_norm,times,ratio = [],[],[],[],[],[],[]
             model_deriv = LinearRegression()
             model_deriv_log = LinearRegression()
 
@@ -1230,7 +1170,7 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
 
                 deriv.append(model_deriv.coef_[0])
                 deriv_log.append(model_deriv_log.coef_[0])
-                time.append(time_frames[i])
+                times.append(time_frames[i])
                 ratio.append(df_dev[df_dev['Cell ID'] == cell]['F/V'].values[i])
 
             vol_dict[cell] = np.array(vol)
@@ -1238,9 +1178,9 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
             dev_dict_norm[cell] = np.array(deriv_norm) 
             dev_dict_log[cell] = np.array(deriv_log)
             dev_dict_log_norm[cell] = np.array(deriv_log_norm)
-            time_dict[cell] = np.array(time)
+            time_dict[cell] = np.array(times)
             ratio_dict[cell] = np.asarray(ratio)
-            bin_dict[cell] = pre.MinMaxScaler((0,1)).fit_transform(np.arange(0,len(time),1).reshape(-1, 1)).flatten()
+            bin_dict[cell] = pre.MinMaxScaler((0,1)).fit_transform(np.arange(0,len(times),1).reshape(-1, 1)).flatten()
 
     df_temp = []
     for cell in vol_dict.keys():
@@ -1310,7 +1250,7 @@ def column_mean(df,column,conf = .95, method = np.mean, plot_hist = False):
 
     return times,mean,ci
 
-def plot_column_mean(time,mean,ci,column,color = 'Orange', ax = None):
+def plot_column_mean(times,mean,ci,column,color = 'Orange', ax = None):
     """
     Plot the colunm mean for the entire experiment.
     Check also 'column_mean()'.
@@ -1341,23 +1281,23 @@ def plot_column_mean(time,mean,ci,column,color = 'Orange', ax = None):
     None
     """
     if ax is None:
-        plt.plot(time,mean, color = color)
-        plt.fill_between(time,ci[:,0],ci[:,1],color=color, alpha = .3)
+        plt.plot(times,mean, color = color)
+        plt.fill_between(times,ci[:,0],ci[:,1],color=color, alpha = .3)
         plt.title(column+ ' Mean', fontsize = 17)
         plt.xlabel('Time (min)', fontsize = 15)
         plt.ylabel(column, fontsize = 17)
         plt.show()
     else:
         out = []
-        out.append(ax.plot(time,mean, color = color))
-        out.append(ax.fill_between(time,ci[:,0],ci[:,1],color=color, alpha = .3))
+        out.append(ax.plot(times,mean, color = color))
+        out.append(ax.fill_between(times,ci[:,0],ci[:,1],color=color, alpha = .3))
         out.append(ax.set_title(column+ ' Mean', fontsize = 17))
         out.append(ax.set_xlabel('Time (min)', fontsize = 15))
         out.append(ax.set_ylabel(column, fontsize = 17))
         
         return out
 
-def	derivative_binning(df_deriv, derivative_column = 'Derivative', bins = 10 , plot_params = None, sort_by = 'Cell Cycle', print_bins = True, conf = 0.95, method = np.mean):
+def	derivative_binning(df_deriv, derivative_column = 'Derivative', bins = 10 , sort_by = 'Cell Cycle', print_bins = True, conf = 0.95, method = np.mean):
     """
     Perform the binning of the derivative of one column.
     Please check 'derivative()'.
@@ -1379,10 +1319,6 @@ def	derivative_binning(df_deriv, derivative_column = 'Derivative', bins = 10 , p
         with the desired bins intervals. 
         e.g., [0,500,1000,1500,2000,2500,3000,
         3500,4000,4500].
-    plot_params : dict
-        Is the output of 'growth_rate()', this func
-        will add the bin parameter to the dict, if None
-        the output will a dict with just one item 'bin'.
     sort_by : str (optional)
         The parameter to bin the data (x axis), the 
         default is 'Cell Cycle', but is also possible 
@@ -1519,7 +1455,7 @@ def bin_column(df_3d,column = 'F/V',bins = 10,sort_by = 'Cell Cycle',print_bins 
             
     return bins_mean,ci
 
-def plot_derivative_mean(time,mean,ci,column = 'Fluor1 sum',derivative_column = 'Derivative',color = 'Orange', ax = None):
+def plot_derivative_mean(times,mean,ci,column = 'Fluor1 sum',derivative_column = 'Derivative',color = 'Orange', ax = None):
     """
     Plot the derivative mean for the entire experiment.
     Check also derivative() and column_mean().
@@ -1556,12 +1492,12 @@ def plot_derivative_mean(time,mean,ci,column = 'Fluor1 sum',derivative_column = 
     None
     """
     if ax is None:
-        plt.plot(time,mean, color = color)
-        plt.fill_between(time,ci[:,0],ci[:,1],color=color, alpha = .3)
+        plt.plot(times,mean, color = color)
+        plt.fill_between(times,ci[:,0],ci[:,1],color=color, alpha = .3)
         if column == 'Volume':
             plt.title('{} Derivative'.format(column), fontsize = 17)
         else:
-            plt.title('Growth Rate'.format(column), fontsize = 17)
+            plt.title('Growth Rate', fontsize = 17)
         plt.xlabel('Time (min)', fontsize = 15)
         if derivative_column == 'Log Derivative/V':
             plt.ylabel(r'$\frac{\frac{\partial (log(%s))}{\partial t}}{Volume}$'%(column), fontsize = 15)
@@ -1574,8 +1510,8 @@ def plot_derivative_mean(time,mean,ci,column = 'Fluor1 sum',derivative_column = 
         plt.show()
     else:
         out = []
-        out.append(ax.plot(time,mean, color = color))
-        out.append(ax.fill_between(time,ci[:,0],ci[:,1],color=color, alpha = .3))
+        out.append(ax.plot(times,mean, color = color))
+        out.append(ax.fill_between(times,ci[:,0],ci[:,1],color=color, alpha = .3))
         if column == 'Volume':
             out.append(ax.set_title('Growth Rate', fontsize = 17))
         else:
@@ -1656,7 +1592,6 @@ def plot_bins(arr,ci,column = 'Fluor1 sum',derivative_column = 'Derivative',sort
             plt.plot([bins,bins], [up,down],'-',color = line)
             plt.plot([left, right], [up, up], color= line)
             plt.plot([left, right], [down, down], color= line)
-            # plt.plot([left_fill,right_fill],[data,data],'-',color = line, alpha = .3,linestyle='--');
             plt.plot(bins,data,'o',color = line)
             if cmap is not None:
                 plt.fill_between([left_fill,right_fill],min_v,max_v, color=c,alpha=.3)
@@ -2129,9 +2064,8 @@ def lineage_derivative(df_3d, reverse_lineage, column = 'Fluor1 sum',derivative_
     cell and with the mean diff inside the cell. To create this 
     volume array the data is filtered using the parameters 'perc' and
     'order', in case of the order is biggter than the window the order
-    will be reduced automatically and saved in 'plot_params' (outout of
-    the function). This manipulation isn't used to normalize the 
-    derivative data. Also, the derivative data is filtered to remove
+    will be reduced automatically. This manipulation isn't used to normalize 
+    the derivative data. Also, the derivative data is filtered to remove
     the outliers based on the 'std' parameter.
 
     Parameters
