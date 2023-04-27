@@ -22,7 +22,7 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 4. Configure [Python inside MATLAB](https://fr.mathworks.com/help/matlab/matlab_external/install-supported-python-implementation.html)
 5. Add the scripts _pipeline.m,pipeline2.m_ and _pipelineSeg.m_ in the _batch_ folder
 6. Add the script _loadConstants_pipeline.m_ in the _settings_ folder
-7. Create a folder called _pipeline_ (or whatever name you want, you can also use the pipeline folder when downloading the repositories)
+7. Create a folder called _pipeline_ (or whatever name you want, you can also use the pipeline folder (this one) when downloading the repositories)
 8. Put the _pipeline.py_ and _functions_pipeline.py_ in the same the folder that you choosed
 
 ## Running the pipeline
@@ -94,7 +94,7 @@ This section is to give more information about the pipeline, how to organize the
 <details>
   <summary>How to organize the data?</summary>
     
-  Initially the FOV folders should be named in sequence as "01,02,03,04,05...10,11,12..."to facilitate the writing of the log by the pipeline and for the user to have a notion of which FOV is being analyzed. I believe this has already been solved and the names can be passed as "1,2,3,4,5...10,11,12..." this organization in numbers is important for SuperSegger and the FOV can be checked after the library processing in the 'FOV' column as "xy01,xy02,xy03...".
+  Initially the FOV folders should be named in sequence as "01,02,03,04,05...10,11,12..."to facilitate the writing of the log by the pipeline and for the user to have a notion of which FOV is being analyzed. I believe this has already been solved and the names can be passed as "1,2,3,4,5...10,11,12..." this organization in numbers is important for SuperSegger and the FOV can be checked after the library processing in the 'FOV' column as "xy01,xy02,xy03...". Recently we had an error when analyzing an experiment with problems, each FOV had a different number of images. This led to errors. So before starting the process we probably need to adjust the number of images in each FOV. Unfortunately, we didn`t have time to debug this problem.
   
   To analyze only one FOV
   
@@ -171,7 +171,25 @@ This section is to give more information about the pipeline, how to organize the
     |           ├── img0002.tiff
     |           └── ... 
     └── ...
-                                                                                                                         
 </details>
 
+<details>
+  <summary>Possible erros</summary>
+  
+  Several things can produce an error in this code, because it has not been tested with much variability. If you get an error following this tutorial, check if the data is organized correctly, if all paths are correct, if the choices made in the pipeline are correct (the value of the inputs). Then, try to run it again ! Another thing that can be involved is different versions of packages needed by python/matlab and the OS used, the installation should be done carefully. If errors persist please open an [Issue here on GitHub](https://github.com/tuliofalmeida/bacteria/issues/new)! When creating an Issue try to be as specific as possible, put the complete error (copy and paste), tell how it happened, add a screenshot of the terminal.
+  
+</details>
+
+<details>
+  <summary>Improving Pipeline Results (SuperSegger-Omnipose)</summary>
+  
+  1. There are different ways to improve the pipeline result. The more controlled the experiment is (focus, stability, fluorescence level...) the easier it is for both software to perform well.
+  2. For reasons of time, it was not possible to train a specific network for use. But, it is possible to adjust some parameters to improve the Omnipose segmentation process. If the two nets with pre-set parameters don't perform well on your data, you can test different networks (for E.coli basically _bact_phase_omni_ and _bact_fluor_omni_) and parameters (for us the most important was the _mask_) using the [Omnipose GUI](https://github.com/kevinjohncutler/omnipose). Using the interface you can add an image (by dragging it to the interface) and adjust the parameters for segmentation. After the segmentation if you like the results, in the bottom left corner of the screen you will see the code line to use these parameters. These parameters must be added manually in the pipeline code (I advise to test them in one FOV using the One FOV mode). To modify the network parameters used, you must change in the _functions_pipeline.py_ file the function you want to use (_one_fov()_,_multiple_fovs()_ or _multiple_experiments()_) and look for the line that contains a condition `if model == 0` (for the _bact_phase_omni_ model) and `elif model == 1` (for the _bact_fluor_omni_ model). After this condition you will have a command `os.system('python -m omnipose ...')` and inside this function you should make the changes. Type this to open the GUI:
+  
+          conda activate omnipose   # or the name that you choosed to the omnipose env
+          python -m omnipose        # this will open the interface
+
+  3. 
+
+</details>
 
