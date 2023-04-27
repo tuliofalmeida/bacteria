@@ -3,6 +3,7 @@ import sys
 import time
 import shutil
 import graphviz
+import scipy.io
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -19,67 +20,6 @@ from scipy.signal import savgol_filter, argrelextrema
 from anytree import Node, RenderTree, PostOrderIter
 
 
-def interactive_table(df_list, cell = None, labels = None):
-    """
-    Creates an interactive table with statistics using a DataFrame as input. 
-    
-    Parameters
-    --------------
-    df_list: list
-        list of DataFrame
-    cell: int (optional)
-        The number of the specific cell (just for 3D data)
-    labels: list
-        list with the label for each DataFrame
-        
-    Returns
-    --------------
-    None
-    
-    Requirements
-    --------------
-    facets-overview==1.0.0
-    https://stackoverflow.com/questions/71759248/importerror-cannot-import-name-builder-from-google-protobuf-internal
-    
-    """
-    import pandas as pd
-    from facets_overview.feature_statistics_generator import FeatureStatisticsGenerator
-    from IPython.core.display import display, HTML
-    import base64
-
-    fsg = FeatureStatisticsGenerator()
-    dataframes = []
-
-    if isinstance(df_list, list) == False: raise TypeError("input data must be a list")
-    if labels != None and len(labels) != len(df_list): raise TypeError("labels length must be equal to df_list")
-    if cell is None:
-        for idx,df in enumerate(df_list):
-            if isinstance(df, pd.DataFrame) == False: raise TypeError("input data must be a pandas DataFrame from df_data2d() or df_data3d()")
-            else:
-                if labels is None:
-                    dataframes.append({'table': df, 'name': 'Data_'+str(idx)})
-                else:
-                    dataframes.append({'table': df, 'name': labels[idx]})
-    else:
-        for idx,df in enumerate(df_list):    
-            if df.shape[1] != 15: raise TypeError("input data must be a pandas DataFrame from df_data3d()")
-            else:
-                if labels is None:
-                    dataframes.append({'table': df, 'name': 'Data_'+str(idx)})
-                else:
-                    dataframes.append({'table': df, 'name': labels[idx]})
-        
-    censusProto = fsg.ProtoFromDataFrames(dataframes)
-    protostr = base64.b64encode(censusProto.SerializeToString()).decode("utf-8")
-
-    HTML_TEMPLATE = """<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.3.3/webcomponents-lite.js"></script>
-            <link rel="import" href="https://raw.githubusercontent.com/PAIR-code/facets/1.0.0/facets-dist/facets-jupyter.html">
-            <facets-overview id="elem"></facets-overview>
-            <script>
-            document.querySelector("#elem").protoInput = "{protostr}";
-            </script>"""
-    html = HTML_TEMPLATE.format(protostr=protostr)
-    display(HTML(html))
 
 def _off_set(df):
     """
@@ -185,7 +125,7 @@ def _volume2d(df2d,const = 0.1067):
 
     return df2d
 
-def fluor_volume_ratio(df, good_cells = None):
+def _fluor_volume_ratio(df, good_cells = None):
     """
     Calculate Fluor/Volume ratio.
     
@@ -213,7 +153,7 @@ def fluor_volume_ratio(df, good_cells = None):
 
     return df
 
-def cell_cycle(df, good_cells = None):
+def _cell_cycle(df, good_cells = None):
     """
     Create the cell cycle vector the time points.
 
@@ -433,7 +373,7 @@ def concatenate_clist(path, fps = 3, filters = True, save_mat = False, path2save
     for idx,mat in enumerate(paths_xy,1):
         data_temp = scipy.io.loadmat(mat)
         data2D_temp = df_data2d(data_temp,fps=fps, const=const)
-        data3D_temp,_ = df_data3d(data_temp,fps = fps, filter = False, const = const)
+        data3D_temp,_ = df_data3d(data_temp,fps = fps, filters = False, const = const)
 
         if direct:
             data2D_temp['fov'] = 'xy' + str(idx)
@@ -469,8 +409,8 @@ def concatenate_clist(path, fps = 3, filters = True, save_mat = False, path2save
         # test
         data2D['Time Division'] = data2D['Cell birth time'].values + data2D['Cell age'].values
          
-        data3D = fluor_volume_ratio(data3D)
-        data3D = cell_cycle(data3D)
+        data3D = _fluor_volume_ratio(data3D)
+        data3D = _cell_cycle(data3D)
 
     if save_mat:
         # data dictionary
@@ -818,8 +758,6 @@ def plot_fluor_lineage_single_cell(df_2d, df_3d, cell_id, ax = None):
     --------------
     None
     """
-    from sklearn import preprocessing as pre
-
     t_mother = pre.MinMaxScaler((0,1)).fit_transform(df_3d[df_3d['Cell ID'] == cell_id]['Time (Frames)'].values.reshape(-1, 1))
     # Plot mother fluorescence:
     plt.plot(t_mother,df_3d[df_3d['Cell ID'] == cell_id]['Fluor1 mean'],label = 'Mother ' + str(int(cell_id)))
@@ -1125,140 +1063,6 @@ def ci_bootstrap(arr, conf = 0.95, method = np.mean, plot= False):
 
     return ci_low,ci_high
 
-def mean_vector_np(df, column_y ,column_x = 'Time (fps)', fps = 3, good_cells = None):
-    """
-    Calculate the mean vector for a column in time or volume
-    using numpy logic.
-    
-    Parameters
-    --------------
-    df : DataFrame
-        DataFrame of 3D data
-    column_y : str
-        Column to calculate the mean (y axis data)
-    column_x: str (optional)
-        x axis data, 'Volume' or 'Time (fps)'
-    fps : int (optional)
-        frames per second used in the experiment, default = 3
-    good_cells : List (optional)
-        List with cells to use 
-        if None good_cells = df['Cell ID'].values
-        
-    Returns
-    --------------
-    time :  nd.array
-        time array using column_x
-    vector : nd.array
-        mean of the vector from column_y
-    """
-    if good_cells is None: 
-        good_cells = list(set(df['Cell ID'].values))    
-    times = np.arange(df[column_x].min(),df[column_x].max()+fps,fps)
-    vector = np.zeros((len(good_cells),len(times)))
-
-    for idx,cell in enumerate(good_cells):
-        for _,data in enumerate(zip(df[df['Cell ID']==cell][column_x],df[df['Cell ID']==cell][column_y])):
-            vector[idx,np.where(times==data[0])[0][0]] = data[1]
-
-    return times, np.mean(vector,0)
-
-def mean_vector_df(df,id_vars = 'Time (fps)', value_vars = 'F/V', conf = 0.95, method = np.mean,fps = 3):
-    """
-    Calculate the mean vector for a column in time or volume
-    using pd.melt.
-    
-    Parameters
-    --------------
-    df : DataFrame
-        DataFrame of 3D data
-    id_vars : str (optional)
-        Column to do the melt, default 'Time (fps)'
-    value_vars : str (optional)
-        Column to calculate the mean, default 'F/V'
-    conf : float (optional)
-        confidence interval desired, default - 0.95
-    method : function (optional)
-        Method to use as basis for the boostrap,
-        default its np.mean. Other options are np.std
-        and stats.sem.
-    fps : int (optional)
-        frames per second used in the experiment, default = 3
-
-    Returns
-    --------------
-    time : nd.array
-        time array for the experiment (using 'Time (fps)')
-    mean_nd.array
-        mean values array
-    ci : nd.array
-        matrix with CI low and high (ci[:,0] = low, ci[:,1] = high)
-    """
-    
-    df_ratio = pd.melt(df, id_vars=[id_vars], value_vars=[value_vars]).sort_values(by=[id_vars])
-    time_frames = list(set(df_ratio['Time (fps)'].values))
-    mean_list = []
-    times = []
-    ci = np.zeros((len(range(1,len(time_frames)-2)),2))
-
-    for i in range(1,len(time_frames)-2):
-        mean_list.append(np.mean(df_ratio[df_ratio['Time (fps)'].isin(time_frames[i-1:i+2])]['value'].values))
-        times.append(time_frames[i])
-        ci[i-1,:] = ci_bootstrap(df_ratio[df_ratio['Time (fps)'].isin(time_frames[i-1:i+2])]['value'].values,
-                                 conf = conf, method = method, plot = False)
-
-    mean_list = np.asarray(mean_list)
-    times = np.asarray(times)
-
-    return times,mean_list,ci
-
-def plot_mean_vector_df(df, id_vars = 'Time (fps)', value_vars = 'F/V', conf = 0.95, method = np.mean, fps = 3, ax = None):
-    """
-    Plot the mean vector for the entire experiment.
-    Check also mean_vector_df().
-    
-    Parameters
-    --------------
-    df : DataFrame
-        DataFrame of 3D data
-    id_vars : str (optional)
-        Column to do the melt, default 'Time (fps)'
-    value_vars: str (optional)
-        Column to calculate the mean, default 'F/V'
-    conf : float (optional)
-        confidence interval desired, default - 0.95
-    method : function (optional)
-        Method to use as basis for the boostrap,
-        default its np.mean. Other options are np.std
-        and stats.sem.
-    fps : int (optional)
-        frames per second used in the experiment, default = 3
-    ax : nd.array (optional)
-        the ax position to plot
-        
-    Returns
-    --------------
-    None
-    """
-
-    times,mean_vector,ci = mean_vector_df(df,id_vars=id_vars,value_vars=value_vars,conf=conf,method=method,fps=fps)
-
-    if ax is None:
-        plt.plot(times,mean_vector)
-        plt.fill_between(times,ci[:,0],ci[:,1], alpha=.3)
-        plt.title(value_vars + ' mean', fontsize = 17)
-        plt.xlabel(id_vars, fontsize = 15)
-        plt.ylabel(value_vars + ' (a.u.)', fontsize = 15)
-        plt.show()
-
-    else:
-        out = ax.plot(times,mean_vector),\
-              ax.fill_between(times,ci[:,0],ci[:,1], alpha=.3),\
-              ax.set_xlabel(id_vars, fontsize = 15),\
-              ax.set_ylabel(value_vars + ' (a.u.)', fontsize = 15),\
-              ax.set_title(value_vars + ' mean', fontsize = 17)
-        
-        return out
-
 def instantaneous_measuraments(df,good_cells, column, fps = 3, minus = 1, plus = 2):
     """
     Calculate the instantaneous mesasurament for each cell 
@@ -1318,71 +1122,6 @@ def instantaneous_measuraments(df,good_cells, column, fps = 3, minus = 1, plus =
             im[idx,np.where(times==data[0])[0][0]] = data[1]
 
     return im,times
-
-def simple_bootstrap(arr, conf = 0.95,times = 10000):
-    """
-    Calculate the confidence interval (CI).By default 
-    the bootstrap is done for 10000 times. 
-    
-    Parameters
-    --------------
-    arr: nd.array
-        data to calculate the CI
-    conf : float (optional)
-        confidence interval desired, default - 0.95
-    times : int (optional)
-        Number of times to run the bootstrap
-
-    Returns
-    --------------
-    ci_low : float
-        Value for the lower CI (default 2.5%)
-    ci_high : float
-        Value for the higher CI (default 97.5%)
-    """
-    values = [np.random.choice(arr,size=len(arr),replace=True).mean() for i in range(times)] 
-    ci_low,ci_high = np.percentile(values,[100*(1-conf)/2,100*(1-(1-conf)/2)])
-    
-    return ci_low,ci_high
-
-def _progressbar(it, prefix="", size=60, out=sys.stdout):
-    """
-    Binarize the data and make the mean for each bin.
-    Suport function for fluor_lineage(). Bins are
-    calculated based on the time data (previous reshaped
-    and sclaed) using np.histogram(), default values for bins
-    is 10.
-    
-    Parameters
-    --------------
-    it : int
-        range of iterations (for size)
-    prefix : str
-        Term before the computation
-    size : int (optional)
-        progress bar size
-    out : function
-        show the bar in the console
-        
-    Returns
-    --------------
-    None
-
-    Author
-    --------------
-    https://stackoverflow.com/questions/3160699/python-progress-bar
-    """
-    import sys
-    count = len(it)
-    def show(j):
-        x = int(size*j/count)
-        print("{}[{}{}] {}/{}".format(prefix, "#"*x, "."*(size-x), j, count), 
-                end='\r', file=out, flush=True)
-    show(0)
-    for i, item in enumerate(it):
-        yield item
-        show(i+1)
-    print("\n", flush=True, file=out)
 
 def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
     """
@@ -1550,11 +1289,11 @@ def column_mean(df,column,conf = .95, method = np.mean, plot_hist = False):
         Interval in the first column and the 
     """
     len_data = []
-    time = natsorted(set(df['Time (fps)'].values))
-    mean = np.zeros((len(time),))
-    ci = np.zeros((len(time),2))
+    times = natsorted(set(df['Time (fps)'].values))
+    mean = np.zeros((len(times),))
+    ci = np.zeros((len(times),2))
 
-    for idx,ts in enumerate(time):
+    for idx,ts in enumerate(times):
         temp = df[df['Time (fps)']==ts][column].values
         mean[idx] = np.mean(temp)
         len_data.append(len(df[df['Time (fps)']==ts][column].values))
@@ -1569,7 +1308,7 @@ def column_mean(df,column,conf = .95, method = np.mean, plot_hist = False):
         plt.xlabel('len(derivative)')
         plt.show()
 
-    return time,mean,ci
+    return times,mean,ci
 
 def plot_column_mean(time,mean,ci,column,color = 'Orange', ax = None):
     """
@@ -3259,8 +2998,6 @@ def diff_minima(df_3d,df_2d,derivative_column = 'Derivative/V',order = 3,pre = N
                         temp_order = temp_order-1
                     else:
                         continue
-            # else:
-            # 	pass
 
         elif len(df_3d[df_3d['Cell ID']==daughter_cell2]) > 0:
             for attempt in range(for_range):
@@ -3289,8 +3026,6 @@ def diff_minima(df_3d,df_2d,derivative_column = 'Derivative/V',order = 3,pre = N
                         temp_order = temp_order-1
                     else:
                         continue
-            # else:
-            # 	pass
 
     vol_dict['all']['diff'],vol_dict['all']['min'],vol_dict['all']['birth'] = volume_diff,volume_minima,size_birth
     vol_dict['pre']['diff'],vol_dict['pre']['min'],vol_dict['pre']['birth'] = volume_diff_pre,volume_minima_pre,size_birth_pre
