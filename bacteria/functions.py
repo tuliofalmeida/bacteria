@@ -3516,12 +3516,50 @@ def plot_distance_minima(vol_dict,key,color = None,ax=None):
         out.append(ax.legend())
         return out
 
-# !pip install session-info
-# !pip install pipreqs
-# !pip install nbconvert
-# %cd code
-# !jupyter nbconvert --output-dir="./reqs" --to script 200707.ipynb
-# %cd reqs
-# !pipreqs
-# import session_info
-# session_info.show()
+def cells_pre_shift(df_3d, pre):
+    """
+    Function to extract the Cell ID of
+    all cells that divided before an
+    moment in time.
+
+    Parameters
+    --------------
+    df_3d : DataFrame
+        3D data
+    pre : int 
+        Moment in time to be the limit
+        
+    Returns
+    --------------
+    cells_pre : nd.array
+        array with the Cell ID for cells that
+        divided before the treshold 
+    """
+    all_cells = natsorted(set(df_3d['Cell ID']))
+    cells_pre = [cell for cell in all_cells if df_3d[df_3d['Cell ID']==cell]['Time (fps)'].values[-1] < pre]
+    
+    return np.asarray(cells_pre)
+
+def cells_pos_shift(df_3d, pos):
+    """
+    Function to extract the Cell ID of
+    all cells that were born after an
+    moment in time.
+
+    Parameters
+    --------------
+    df_3d : DataFrame
+        3D data
+    pos : int 
+        Moment in time to be the start
+        
+    Returns
+    --------------
+    cells_pos : nd.array
+        array with the Cell ID for cells that
+        were born after the treshold 
+    """
+    all_cells = natsorted(set(df_3d['Cell ID']))
+    cells_pos = [cell for cell in all_cells if df_3d[df_3d['Cell ID']==cell]['Time (fps)'].values[0] > pos]
+
+    return np.asarray(cells_pos)
