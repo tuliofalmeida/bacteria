@@ -2,6 +2,14 @@
 
 This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python. The pipeline transitions SuperSegger(MATLAB) -> Omnipose (Python) -> SuperSegger (MATLAB) automatically. The pipeline has 3 routines, which allow you to analyze only one Field of View (FOV), analyze multiple FOV (of the same experiment or not, it will analyze all FOV in the folder) and analyze multiple experiments.
 
+## Contents
+
+- [Requirements](#requirements) 
+- [Installation](#installation) 
+- [Running the pipeline](#running-the-pipeline) 
+- [Before you start!](#before-you-start)
+- [Development](#development)
+
 ## Requirements
 
 1. [Python](https://www.python.org/downloads/) (extensively tested in version 3.9 inside conda env)
@@ -192,4 +200,8 @@ This section is to give more information about the pipeline, how to organize the
   3. If you adjust the Omnipose parameters it does not improve the results. You may need to retrain the SuperSegger algorithm and an Omnipose network. For computational power reasons and convenience, I suggest you start by trying to retrain SuperSegger for the data ([how to train SuperSegger](https://github.com/wiggins-lab/SuperSegger/wiki/Creating-your-own-constants-file)), if not, you may need to train an Omnipose network. Training an Omnipose network is a little more complex, as you will need to create the reference masks for your images (labeling) and without a GPU this process can be time consuming. To do this, it will be necessary to interact with the Omnipose codes to train the data and the necessary organization of the images ([here](https://github.com/kevinjohncutler/omnipose#how-to-train-omnipose)). Also it might be interesting to read about the [CellPose](https://github.com/MouseLand/cellpose) process and there is also a project/repository that has tutorials on how to create masks and train networks that might be useful [ZeroCostDL4Mic](https://github.com/HenriquesLab/ZeroCostDL4Mic/wiki) (An alternative to the lack of GPU is to carry out the training using GoogleColab, they explain how to do this in this repository).
 
 </details>
+
+## Development
+
+* I developed this pipeline during my 3 month pre-doc rotation working with the PhD. Bianca Sclavi.
 
