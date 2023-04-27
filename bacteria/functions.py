@@ -3,22 +3,20 @@ import sys
 import time
 import shutil
 import graphviz
-import scipy.io
-# import matlab.engine
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-# from IPython import display
+
 from tqdm import tqdm
 from scipy.stats import sem
-from natsort import natsorted # pip install natsort
+from natsort import natsorted
 from datetime import date,timedelta
 from matplotlib.lines import Line2D
 from sklearn import preprocessing as pre
 from sklearn.linear_model import LinearRegression
 from scipy.signal import savgol_filter, argrelextrema
-from anytree import Node, RenderTree, PostOrderIter # pip install anytree
+from anytree import Node, RenderTree, PostOrderIter
 
 
 def interactive_table(df_list, cell = None, labels = None):
@@ -613,8 +611,8 @@ def plot_2d_data(df_2d):
 
     Parameters
     --------------
-    df_3d : DataFrame
-        DataFrame of 3D data
+    df_2d : DataFrame
+        DataFrame of 2D data
     reverse_lineage : dict
         Dict with the lineage Cell ID's as key,
         output from 'lineages()'
