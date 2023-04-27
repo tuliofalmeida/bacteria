@@ -7,6 +7,7 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 - [Requirements](#requirements) 
 - [Installation](#installation) 
 - [Running the pipeline](#running-the-pipeline) 
+- [Pipeline Flow](#pipeline-flow)
 - [Before you start!](#before-you-start)
 - [Development](#development)
 
@@ -94,6 +95,12 @@ This is an internal SuperSegger function to align all frames with the first fram
 The bacht_phase_omni model is trained using phase contrast images and can work well in fluoresence data using inverted images, the code already perform the invertion. Also we need to use a higher value for mask parameter (using 2.4), this model can work well in experiments were you have a big change in fluorescence intensity and/or in focus. The bact_fluor_omni is trained using fluorescence images, and work well in experiments with little variation in focus and fluorescence.
 
 8. After these steps, the pipeline will start processing the images (Check the section Before you start)
+
+## Pipeline Flow
+
+<p align="center">
+  <img width="500" height="600" src="https://github.com/tuliofalmeida/bacteria/blob/main/pipeline/pipeline.png">
+</p>
 
 ## Before you start!
 
