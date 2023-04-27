@@ -2678,7 +2678,7 @@ def plot_lineage_ratio(df_lineage,x_axis = 'Smoothed Volume',ax = None):
 
         return out
 
-def plot_corr_lineage(df_3d, reverse_lineages, mother_cell, column = 'Fluor1 mean', method = np.var, derivative_plot = False):
+def plot_corr_lineage(df_3d, reverse_lineages, mother_cell, column = 'Fluor1 mean',derivative_column = 'Derivative', method = np.var, derivative_plot = False):
     """
     Function to produce three plots. The first
     one is the correlation between the lineages
@@ -2773,14 +2773,14 @@ def plot_corr_lineage(df_3d, reverse_lineages, mother_cell, column = 'Fluor1 mea
         fig.suptitle('Lineage of Cell {}'.format(mother_cell),fontsize = 17)
         for idx,lineage in enumerate(temp_lineage[::2]):
             if lineage_plot_size != 1:
-                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',order=4)
+                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',derivative_column = derivative_column,order=4)
                 plot_lineage_derivative(df_lineage,extremes,plot_params,x_axis='Time (fps)',ax=ax[idx])
                 ax[idx].set_title('')
                 if limit_plot != idx:
                     ax[idx].set_xlabel('')
                     ax[idx].set_xticks([])
             else:
-                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',order=4)
+                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',derivative_column = derivative_column,order=4)
                 plot_lineage_derivative(df_lineage,extremes,plot_params,x_axis='Time (fps)',ax=ax)
                 ax.set_title('')
     else:
@@ -2795,23 +2795,23 @@ def plot_corr_lineage(df_3d, reverse_lineages, mother_cell, column = 'Fluor1 mea
         for idx,lineage in enumerate(temp_lineage[::2]):
             if lineage_plot_size != 1:
                 ax2 = ax[count].twinx()
-                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',order=4)
+                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',derivative_column = derivative_column,order=4)
                 
                 y_axis = pre.MinMaxScaler((0,50)).fit_transform(df_lineage['Smoothed Derivative'].values.reshape(-1, 1))
                 ax[count].plot(df_lineage['Time (fps)'].values, y_axis,'--', color='red')
-                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Fluor1 sum',order=4)
+                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Fluor1 sum',derivative_column = derivative_column,order=4)
                 y_axis = pre.MinMaxScaler((0,50)).fit_transform(df_lineage['Smoothed Derivative'].values.reshape(-1, 1))
 
                 ax[count].plot(df_lineage['Time (fps)'].values, y_axis,'--', color='k')
                 ax[count].legend(lines, labels,loc='upper left',ncols = 4)
             else:
                 ax2 = ax.twinx()
-                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',order=4)
+                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Volume',derivative_column = derivative_column,order=4)
                 
                 y_axis = pre.MinMaxScaler((0,50)).fit_transform(df_lineage['Smoothed Derivative'].values.reshape(-1, 1))
                 ax.plot(df_lineage['Time (fps)'].values, y_axis,'--', color='red')
                 
-                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Fluor1 sum',order=4)
+                df_lineage,extremes,plot_params = lineage_derivative(df_3d,temp_lineage[::2][idx],column='Fluor1 sum',derivative_column = derivative_column,order=4)
                 y_axis = pre.MinMaxScaler((0,50)).fit_transform(df_lineage['Smoothed Derivative'].values.reshape(-1, 1))
 
                 ax.plot(df_lineage['Time (fps)'].values, y_axis,'--', color='k')
@@ -2842,7 +2842,7 @@ def plot_corr_lineage(df_3d, reverse_lineages, mother_cell, column = 'Fluor1 mea
         fig.suptitle('Lineage of Cell {}'.format(mother_cell),fontsize = 17)
         plt.show()
 
-def plot_distance_minima_lineage(df_3d,df_2d,lineages_list,order=9,ax = None):
+def plot_distance_minima_lineage(df_3d,df_2d,lineages_list,column='Fluor1 sum',derivative_column='Derivative',order=9,ax = None):
     """
     Function to plot the distance between the minimas for
     an specifics lineages.
@@ -2855,7 +2855,13 @@ def plot_distance_minima_lineage(df_3d,df_2d,lineages_list,order=9,ax = None):
         DataFrame of 2D data
     lineages_list : list
         List with the lineages to plot, its better to use
-        the output of 'lineage_corr_filter()' 
+        the output of 'lineage_corr_filter()'
+    derivative_column : str (optional)
+        Derivative column to bin. Columns: 'Derivative',
+        'Derivative/V' is the derivative normalized by 
+        volume, 'Log Derivative' logarithm of the derivative,
+        'Log Derivative/V' logarithm of the derivative
+        normalized by volume. Default is 'Derivative'.
     order : int (optional)
         The order of the polynomial used to fit the 
         savgol_filter from scipy in 'lineage_derivative()'
@@ -2869,7 +2875,7 @@ def plot_distance_minima_lineage(df_3d,df_2d,lineages_list,order=9,ax = None):
     """
     size_birth,minima_volume = [],[] 
     for lineage in lineages_list:
-        df,peaks,_ = lineage_derivative(df_3d,lineage,order=order,column='Fluor1 sum')
+        df,peaks,_ = lineage_derivative(df_3d,lineage,order=order,column=column,derivative_column=derivative_column)
         for cell,idx in peaks['minima'].items():
             if idx !=0:
                 size_birth.extend(df_2d[df_2d['Cell ID']==cell]['Volume birth'].values)
