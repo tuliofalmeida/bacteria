@@ -7,7 +7,7 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 1. [Python](https://www.python.org/downloads/) (extensively tested in version 3.9 inside conda env)
    * [Anaconda](https://www.anaconda.com/download/)
    * [Omnipose](https://github.com/kevinjohncutler/omnipose)
-   * Basic libraries as: os,sys,time,shutil (native in python)
+   * Basic libraries as: os,sys,time,shutil,datetime (native in python) and natsort (to order/sort files)
 2. [MATLAB](https://fr.mathworks.com/products/matlab.html) (extensively tested on version R2022b, but the version must be compatible with python 3.9 our earlier)
    * [SuperSegger-Omnipose](https://github.com/tlo-bot/supersegger-omnipose)
 3. [matlabengine](https://pypi.org/project/matlabengine/) (version that match with your Python and MATLAB)
@@ -17,13 +17,13 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 ## Installation
 
 1. Install [Omnipose](https://github.com/kevinjohncutler/omnipose) (check their tutorial)
-2. Inside the Omnipose environment you should install the matlabengine `pip install matlabengine`
+2. Inside the Omnipose environment you should install the matlabengine `pip install matlabengine` and narsort `pip install natsort`
 3. Clone [SuperSegger](https://github.com/tlo-bot/supersegger-omnipose) repo and add it into your MATLAB [path - Add folder and subfolders](https://fr.mathworks.com/help/matlab/matlab_env/add-remove-or-reorder-folders-on-the-search-path.html)
 4. Configure [Python inside MATLAB](https://fr.mathworks.com/help/matlab/matlab_external/install-supported-python-implementation.html)
 5. Add the scripts _pipeline.m,pipeline2.m_ and _pipelineSeg.m_ in the _batch_ folder
 6. Add the script _loadConstants_pipeline.m_ in the _settings_ folder
 7. Create a folder called _pipeline_ (or whatever name you want, you can also use the pipeline folder when downloading the repositories)
-8. Put the _pipeline.py_ and _functions.py_ in the same the folder that you choosed
+8. Put the _pipeline.py_ and _functions_pipeline.py_ in the same the folder that you choosed
 
 ## Running the pipeline
 
@@ -35,55 +35,57 @@ This is a step by step guide to using the pipeline after installation, but befor
 conda run -n omnipose --live-stream python pipeline.py
 ```
 3. You will see the following message in the terminal and choose the routine:
-```python
-"""
-Pipeline - SuperSegger-Omnipose
 
-Chose the code to run: 
-0 - One FOV Analysis
-1 - Multiple FOV's Analysis 
-2 - Multiple Experiments Analysis 
-3 - To see the documentation
-"""
-```
-  * Input 0: Run the Pipeline for one Field of View (FOV) - One folder with images (FOV).
-  * Input 1: Run the Pipeline for multiple Field of Views (FOV's) - One folder (Experiment) with other folders (FOV's) with images.
-  * Input 2: Run the Pipeline for multiple experiments - One folder (All data) with other folders (Experiments) with folders (FOV's) with images.
-  * Input 3: Will print the documentation in the terminal.
+        Pipeline - SuperSegger-Omnipose
+
+        Chose the code to run: 
+        0 - One FOV Analysis
+        1 - Multiple FOV's Analysis 
+        2 - Multiple Experiments Analysis 
+        3 - To see the documentation
+  
+ * Options:
+    * Input 0: Run the Pipeline for one Field of View (FOV) - One folder with images (FOV).
+    * Input 1: Run the Pipeline for multiple Field of Views (FOV's) - One folder (Experiment) with other folders (FOV's) with images.
+    * Input 2: Run the Pipeline for multiple experiments - One folder (All data) with other folders (Experiments) with folders (FOV's) with images.
+    * Input 3: Will print the documentation in the terminal (check functions documentation).
 
 4. After choosing the routine, you will need to pass the folder path:
-```python
-"""
-Set the folder to run the analysis:
-"""
-```
+
+        Set the folder to run the analysis:
+
 You should pass as example: /home/documents/experiment_test/ (don't need to add quotation marks '')
 
 5. The pipeline you ask if you want to format the images:
-```python
-"""
-Format images (0 = No, 1 = Yes): 
-"""
-```
-  * Input 0: It will not format the images, they should already be organized with the two separate channels and with the names following the SuperSegger pattern.
-  * Input 1: The pipeline will modify the name of the file according to SuperSegger and will duplicate the images in channel 1 and channel 2 (it is doing this automatically because we do not have the data in contract phase, only fluorescence. This can be changed from the parameter _'double'_ to _False_, in the function _format_images()_ in the file _functions.py_).
+
+        Format images (0 = No, 1 = Yes): 
+ * Options:
+      * Input 0: It will not format the images, they should already be organized with the two separate channels and with the names following the SuperSegger pattern.
+      * Input 1: The pipeline will modify the name of the file according to SuperSegger and will duplicate the images in channel 1 and channel 2 (it is doing this automatically because we do not have the data in contract phase, only fluorescence. This can be changed from the parameter _'double'_ to _False_, in the function _format_images()_ in the file _functions_pipeline.py_).
 
 <details>
   <summary>If you have more than one fluorescence channel!</summary>
 You will have to modify this function, it is possible to use the same logical structure, continuing to fold the image with GFP and adding a line with a condition and just change the name of the mCherry images to channel 3 (variable "ref_cherry" in function _format_image()_).</details>
 
-6. Finally, the pipeline will ask if you want to align the images:
-```python
-"""
-Align images to the first (0 = No, 1 = Yes):
-"""
-```
+6. Also, the pipeline will ask if you want to align the images:
+
+        Align images to the first (0 = No, 1 = Yes):
+
 This is an internal SuperSegger function to align all frames with the first frame (or you can change the frame to align in SuperSegger's settings in the _loadConstants_pipeline.m_ file). We didn't perform extensive tests for this parameter, but we got slightly better results aligning the images.
+ * Options:
+      * Input 0: SuperSegger will not align images 
+      * Input 1: SuperSegger will align the images 
 
-  * Input 0: SuperSegger will not align images 
-  * Input 1: SuperSegger will align the images 
+7. Finally, you will have to choose which model you want to use:
 
-7. After that the pipeline will start processing the images (Check the section Before you start)
+        Which model do you want to use? (0 = bact_phase_omni, 1 = bact_fluor_omni):
+ * Options:
+      * Input 0: to use _bact_phase_omni_ 
+      * Input 1: to use _bact_fluor_omni_ 
+
+The bacht_phase_omni model is trained using phase contrast images and can work well in fluoresence data using inverted images, the code already perform the invertion. Also we need to use a higher value for mask parameter (using 2.4), this model can work well in experiments were you have a big change in fluorescence intensity and/or in focus. The bact_fluor_omni is trained using fluorescence images, and work well in experiments with little variation in focus and fluorescence.
+
+8. After this steps, the pipeline will start processing the images (Check the section Before you start)
 
 ## Before you start!
 
