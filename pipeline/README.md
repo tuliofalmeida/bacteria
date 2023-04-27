@@ -203,5 +203,5 @@ This section is to give more information about the pipeline, how to organize the
 
 ## Development
 
-* I developed this pipeline during my 3 month pre-doc rotation working with the PhD. Bianca Sclavi.
+I developed this pipeline during my 3 month pre-doc rotation working with the PhD. Bianca Sclavi.
 
