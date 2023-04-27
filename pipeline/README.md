@@ -85,10 +85,93 @@ This is an internal SuperSegger function to align all frames with the first fram
 
 The bacht_phase_omni model is trained using phase contrast images and can work well in fluoresence data using inverted images, the code already perform the invertion. Also we need to use a higher value for mask parameter (using 2.4), this model can work well in experiments were you have a big change in fluorescence intensity and/or in focus. The bact_fluor_omni is trained using fluorescence images, and work well in experiments with little variation in focus and fluorescence.
 
-8. After this steps, the pipeline will start processing the images (Check the section Before you start)
+8. After these steps, the pipeline will start processing the images (Check the section Before you start)
 
 ## Before you start!
 
+This section is to give more information about the pipeline, how to organize the data, possible errors, how to improve the result...
 
+<details>
+  <summary>How to organize the data?</summary>
+    
+  Initially the FOV folders should be named in sequence as "01,02,03,04,05...10,11,12..."to facilitate the writing of the log by the pipeline and for the user to have a notion of which FOV is being analyzed. I believe this has already been solved and the names can be passed as "1,2,3,4,5...10,11,12..." this organization in numbers is important for SuperSegger and the FOV can be checked after the library processing in the 'FOV' column as "xy01,xy02,xy03...".
+  
+  To analyze only one FOV
+  
+    .
+    ├── ...
+    ├── experiment_folder                    # Experiment folder with only one FOV
+    │   ├── 01                               # FOV folder --> you must pass THIS FOLDER to the pipeline <--
+    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    |       ├── img0002.tiff  
+    |       ├── img0003.tiff
+    |       └── ...                                                                                                  
+    └── ...
+    
+  To analyze multiple FOVs
+
+    .
+    ├── ...
+    ├── experiment_folder                    # Experiment folder with many FOVs --> you must pass THIS FOLDER to the pipeline <--
+    │   ├── 01                               # FOV Folder
+    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    |       ├── img0002.tiff  
+    |       └── ...  
+    |   ├── 02                               # FOV Folder
+    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    |       ├── img0002.tiff  
+    |       └── ...   
+    |   ├── 03                               # FOV Folder
+    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    |       ├── img0002.tiff  
+    |       └── ...  
+    └── ...
+
+   To analyze multiple Experiments          
+ 
+    .                                                                                                                            
+    ├── all_experiments_folder           # Folder with all experiments --> you must pass THIS FOLDER to the pipeline <--
+    |   ├── experiment_1_folder          # Experiment folder with many FOVs 
+    │       ├── 01                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...  
+    |       ├── 02                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...   
+    |       ├── 03                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...   
+    |   ├── experiment_2_folder          # Experiment folder with many FOVs 
+    │       ├── 01                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...  
+    |       ├── 02                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...   
+    |       ├── 03                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...
+    |   ├── experiment_3_folder          # Experiment folder with many FOVs 
+    │       ├── 01                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...  
+    |       ├── 02                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ...   
+    |       ├── 03                       # FOV Folder
+    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff  
+    |           └── ... 
+    └── ...
+                                                                                                                         
+</details>
 
 
