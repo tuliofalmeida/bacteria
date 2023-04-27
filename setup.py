@@ -23,7 +23,6 @@ setuptools.setup(
             'natsort',
             'anytree',
             'tqdm',
-            # 'matlabengine',
             'scipy'
         ],
     classifiers=[
