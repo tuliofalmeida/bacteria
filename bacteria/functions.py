@@ -215,7 +215,7 @@ def fluor_volume_ratio(df, good_cells = None):
 
 def cell_cycle(df, good_cells = None):
     """
-    Calculate Fluor/Volume ratio.
+    Create the cell cycle vector the time points.
 
     Parameters
     --------------
