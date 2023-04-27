@@ -142,7 +142,7 @@ def _volume(df,const = 0.1067):
         l = df[df['Cell ID']==cell]['Long axis length'].values*const
         w = df[df['Cell ID']==cell]['Short axis'].values*const
         v = np.pi*(l-w) * ((w/2)**2) + (4/3) * np.pi * ((w/2)**3)
-        vol_temp.extend(v) # *0.1067
+        vol_temp.extend(v)
 
     df['Volume'] = vol_temp
 
