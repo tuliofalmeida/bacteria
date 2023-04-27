@@ -35,3 +35,9 @@ Documentation
 `Documentation site`_
 
 .. _Documentation site: https://bacteria.rtfd.io
+
+Pipeline
+=========
+I also developed a `Pipeline`_ to analyze SuperSegger-Omnipose data in a more fluid way using python and being able to run multiple experiments at once 
+
+.. _Pipeline: https://github.com/tuliofalmeida/bacteria/tree/main/pipeline
