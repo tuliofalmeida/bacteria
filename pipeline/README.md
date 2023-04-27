@@ -100,9 +100,9 @@ This section is to give more information about the pipeline, how to organize the
   
     .
     ├── ...
-    ├── experiment_folder                    # Experiment folder with only one FOV
-    │   ├── 01                               # FOV folder --> you must pass THIS FOLDER to the pipeline <--
-    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    ├── experiment_folder             # Experiment folder with only one FOV
+    │   ├── 01                        # FOV folder --> you must pass THIS FOLDER to the pipeline <--
+    │       ├── img0001.tiff          # Inside the folder you should have the images in sequence
     |       ├── img0002.tiff  
     |       ├── img0003.tiff
     |       └── ...                                                                                                  
@@ -112,17 +112,17 @@ This section is to give more information about the pipeline, how to organize the
 
     .
     ├── ...
-    ├── experiment_folder                    # Experiment folder with many FOVs --> you must pass THIS FOLDER to the pipeline <--
-    │   ├── 01                               # FOV Folder
-    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    ├── experiment_folder             # Experiment folder with many FOVs --> you must pass THIS FOLDER to the pipeline <--
+    │   ├── 01                        # FOV Folder
+    │       ├── img0001.tiff          # Inside the folder you should have the images in sequence
     |       ├── img0002.tiff  
     |       └── ...  
-    |   ├── 02                               # FOV Folder
-    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    |   ├── 02                        # FOV Folder
+    │       ├── img0001.tiff          # Inside the folder you should have the images in sequence
     |       ├── img0002.tiff  
     |       └── ...   
-    |   ├── 03                               # FOV Folder
-    │       ├── img0001.tiff                 # Inside the folder you should have the images in sequence
+    |   ├── 03                        # FOV Folder
+    │       ├── img0001.tiff          # Inside the folder you should have the images in sequence
     |       ├── img0002.tiff  
     |       └── ...  
     └── ...
@@ -130,45 +130,45 @@ This section is to give more information about the pipeline, how to organize the
    To analyze multiple Experiments          
  
     .                                                                                                                            
-    ├── all_experiments_folder           # Folder with all experiments --> you must pass THIS FOLDER to the pipeline <--
-    |   ├── experiment_1_folder          # Experiment folder with many FOVs 
-    │       ├── 01                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    ├── all_experiments_folder        # Folder with all experiments --> you must pass THIS FOLDER to the pipeline <--
+    |   ├── experiment_1_folder       # Experiment folder with many FOVs
+    │       ├── 01                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...  
-    |       ├── 02                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |       ├── 02                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...   
-    |       ├── 03                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |       ├── 03                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...   
-    |   ├── experiment_2_folder          # Experiment folder with many FOVs 
-    │       ├── 01                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |   ├── experiment_2_folder       # Experiment folder with many FOVs 
+    │       ├── 01                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...  
-    |       ├── 02                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |       ├── 02                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...   
-    |       ├── 03                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |       ├── 03                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...
-    |   ├── experiment_3_folder          # Experiment folder with many FOVs 
-    │       ├── 01                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |   ├── experiment_3_folder       # Experiment folder with many FOVs 
+    │       ├── 01                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...  
-    |       ├── 02                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
+    |       ├── 02                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
     |           ├── img0002.tiff  
     |           └── ...   
-    |       ├── 03                       # FOV Folder
-    │           ├── img0001.tiff         # Inside the folder you should have the images in sequence
-    |           ├── img0002.tiff  
+    |       ├── 03                    # FOV Folder
+    │           ├── img0001.tiff      # Inside the folder you should have the images in sequence
+    |           ├── img0002.tiff
     |           └── ... 
     └── ...
                                                                                                                          
