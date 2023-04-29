@@ -3089,8 +3089,6 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
             ax[1][1].hist(vol_dict['pre']['diff'],color = color_pre)
             ax[1][1].set_title('Pre {} Histogram'.format(vol_dict['order']['pre']),fontsize = 17)
             ax[1][1].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
-            y_min.append(ax[1][1].get_ylim()[0])
-            y_max.append(ax[1][1].get_ylim()[1])
 
             model = LinearRegression()
             model.fit(np.asarray(vol_dict['pos']['min']).reshape(len(vol_dict['pos']['min']), 1),
@@ -3108,8 +3106,6 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
             ax[1][2].hist(vol_dict['pos']['diff'],color = color_pos)
             ax[1][2].set_title('Pos {} Histogram'.format(vol_dict['order']['pos']),fontsize = 17)
             ax[1][2].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
-            y_min.append(ax[1][2].get_ylim()[0])
-            y_max.append(ax[1][2].get_ylim()[1])
 
             model = LinearRegression()
             model.fit(np.asarray(vol_dict['all']['min']).reshape(len(vol_dict['all']['min']), 1),
@@ -3128,15 +3124,20 @@ def plot_diff_minima(vol_dict,key = None, color = None,color_pre= 'black', color
             ax[1][0].hist(vol_dict['all']['diff'],color = color)
             ax[1][0].set_title('All the time Histogram',fontsize = 17)
             ax[1][0].set_xlabel(r'Daughter Vm - Mother Vm [$\mu m^3$]',fontsize = 15)
-            y_min.append(ax[1][0].get_ylim()[0])
-            y_max.append(ax[1][0].get_ylim()[1])
 
-            ax[1][0].set_ylim(min(y_min),max(y_max)+100)
-            ax[1][1].set_ylim(min(y_min),max(y_max)+100)
-            ax[1][2].set_ylim(min(y_min),max(y_max)+100)
-            ax[1][0].set_xlim(0,5.5)
-            ax[1][1].set_xlim(0,5.5)
-            ax[1][2].set_xlim(0,5.5)
+            if key is None:
+                y_min.append(ax[1][1].get_ylim()[0])
+                y_max.append(ax[1][1].get_ylim()[1])
+                y_min.append(ax[1][0].get_ylim()[0])
+                y_max.append(ax[1][0].get_ylim()[1])
+                y_min.append(ax[1][2].get_ylim()[0])
+                y_max.append(ax[1][2].get_ylim()[1])
+                ax[1][0].set_ylim(min(y_min),max(y_max)+100)
+                ax[1][1].set_ylim(min(y_min),max(y_max)+100)
+                ax[1][2].set_ylim(min(y_min),max(y_max)+100)
+                ax[1][0].set_xlim(0,5.5)
+                ax[1][1].set_xlim(0,5.5)
+                ax[1][2].set_xlim(0,5.5)
 
             plt.tight_layout()
 

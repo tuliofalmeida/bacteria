@@ -108,8 +108,11 @@ loading faster. For that use:
 Colab Tutorial
 ---------------
 
+
+Check out the tutorial on Google Colab!
+
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
    :target: https://colab.research.google.com/github/tuliofalmeida/bacteria/blob/main/notebooks/Tutorial_Concatenate_Filters.ipynb
-   
+
 .. _GitHub: https://github.com/tuliofalmeida/bacteria
 
