@@ -108,7 +108,6 @@ loading faster. For that use:
 Colab Tutorial
 ---------------
 
-
 Check out the tutorial on Google Colab!
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
