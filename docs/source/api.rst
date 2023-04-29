@@ -142,11 +142,11 @@ Fluorescence concentration pos shift (using order = 5)
 
 .. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_3.png?raw=true
 
-Fluorescence rate pre shift
+Fluorescence rate pre shift (using order = 5)
 
 .. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_4.png?raw=true
 
-Fluorescence rate pos shift
+Fluorescence rate pos shift (using order = 5)
 
 .. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_5.png?raw=true
 
@@ -154,13 +154,29 @@ Fluorescence rate pos shift
 Minima Analysis
 ---------------
 
+    >>> diff_dict = bac.diff_minima(df3d,df2d,pre = 600,pos = 800,order = 3, adjust = False)
+
+Plot Minima Volume by Volume at birth
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/minima_1.png?raw=true
+
+Plot Daughther Minima Volume - Mother Minima Volume
+
+    >>> diff_dict = bac.plot_diff_minima(diff_dict,color='purple')
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/minima_2.png?raw=true
+
+Plot minima lineage by volume (order = 3)
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/minima_3.png?raw=true
+
 
 Colab Tutorial
 ---------------
 
-Check out the tutorial on Google Colab!
+All codes and plots are available on a notebook at Google Colab!
 
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
-   :target: https://colab.research.google.com/github/tuliofalmeida/bacteria/blob/main/notebooks/Tutorial_Concatenate_Filters.ipynb
+   :target: https://colab.research.google.com/github/tuliofalmeida/bacteria/blob/main/notebooks/Tutorial_Analysis.ipynb
 
 .. _GitHub: https://github.com/tuliofalmeida/bacteria
