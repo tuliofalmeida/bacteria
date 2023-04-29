@@ -66,7 +66,7 @@ First we will extract the Cell ID's pre and pos shift
 
 Bin the data for all the entire time
 
-    >>> # Volume derivative
+    >>> # Volume derivative 
     >>> bins_fluo_vol_norm,ci_fluo_vol_norm = bac.derivative_binning(fluo_df,derivative_column='Derivative/V',sort_by='Volume',print_bins=True)
     >>> bins_fluo_vol,ci_fluo_vol = bac.derivative_binning(fluo_df,derivative_column='Derivative',sort_by='Volume',print_bins=False)                                                            
     >>> # Fluorescence derivative
@@ -82,13 +82,13 @@ Bin plots entire time
 
 Pre plots
 
-    >>> # Volume derivative
+    >>> # Volume derivative pre
     >>> bins_fluo_vol_norm,ci_fluo_vol_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative/V',sort_by='Volume',print_bins=False)
     >>> bins_fluo_vol,ci_fluo_vol = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative',sort_by='Volume',print_bins=False)                                                         
-    >>> # Fluorescence derivative
+    >>> # Fluorescence derivative pre
     >>> bins_fluo_cc_norm,ci_fluo_cc_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative/V',sort_by='Cell Cycle',print_bins=False)
     >>> bins_fluo_cc,ci_fluo_cc = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative',sort_by='Cell Cycle',print_bins=False)
-    >>> # Fluorescence/Volume Ratio
+    >>> # Fluorescence/Volume Ratio pre
     >>> bins_ratio_vol, ci_ratio_vol = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pre)],column = 'F/V',sort_by = 'Volume',print_bins=False)
     >>> bins_ratio_cc, ci_ratio_cc = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pre)],column = 'F/V',sort_by = 'Cell Cycle',print_bins=False)
 
@@ -96,13 +96,13 @@ Pre plots
 
 Pos plots
 
-    >>> # Volume derivative
+    >>> # Volume derivative pos
     >>> bins_fluo_vol_norm,ci_fluo_vol_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative/V',sort_by='Volume',print_bins=False)
     >>> bins_fluo_vol,ci_fluo_vol = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative',sort_by='Volume',print_bins=False)                                                         
-    >>> # Fluorescence derivative
+    >>> # Fluorescence derivative pos
     >>> bins_fluo_cc_norm,ci_fluo_cc_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative/V',sort_by='Cell Cycle',print_bins=False)
     >>> bins_fluo_cc,ci_fluo_cc = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative',sort_by='Cell Cycle',print_bins=False)
-    >>> # Fluorescence/Volume Ratio
+    >>> # Fluorescence/Volume Ratio pos
     >>> bins_ratio_vol, ci_ratio_vol = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pos)],column = 'F/V',sort_by = 'Volume',print_bins=False)
     >>> bins_ratio_cc, ci_ratio_cc = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pos)],column = 'F/V',sort_by = 'Cell Cycle',print_bins=False)
 
@@ -111,6 +111,43 @@ Pos plots
 
 Lineages Analysis
 -----------------
+
+Calculate all lineages in the dataset
+
+    >>> reverse_lineages, large_lineages, large_nodes , all_nodes = bac.lineages(df2d)
+
+Extract the longer lineages in dict and array
+
+    >>> filtered_lineage = bac.lineage_corr_filter(df3d,reverse_lineages)
+
+Extract lineages start pre and pos the shift
+
+    >>> lineage_pre = bac.lineages_pre_shift(df3d,reverse_lineages, shift = 700)
+    >>> lineage_pos = bac.lineages_pos_shift(df3d,reverse_lineages, shift = 600)
+
+Plot one cell mother lineage and the correlation between the nodes
+
+    >>> bac.plot_corr_lineage(df3d,reverse_lineages,filtered_lineage[5][0])
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_1.png?raw=true
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_1.1.png?raw=true
+
+The order is a paramater that will influence the amount of noise accepet to estimate the smoothed derivative
+Fluorescence concentration pre shift (using order = 5)
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_2.png?raw=true
+
+Fluorescence concentration pos shift (using order = 5)
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_3.png?raw=true
+
+Fluorescence rate pre shift
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_4.png?raw=true
+
+Fluorescence rate pos shift
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_5.png?raw=true
 
 
 Minima Analysis
