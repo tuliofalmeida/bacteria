@@ -32,10 +32,10 @@ Calculating the instantaneous volume change (Growth Rate) and fluorescence.
 
 Calculating the average of all cells for different columns from derivative and 3D data
 
-    >>> time_gr,mean_gr,ci_gr = bac.column_mean(gr_df,'Derivative')
-    >>> time_fluo,mean_fluo,ci_fluo = bac.column_mean(fluo_df,'Derivative')
-    >>> time_div,mean_div,ci_div = bac.column_mean(df3d,'Long axis (L)')
-    >>> time_ratio,mean_ratio,ci_ratio = bac.column_mean(df3d,'F/V')
+    >>> time_gr,mean_gr,ci_gr = bac.column_mean(gr_df,column='Derivative')
+    >>> time_fluo,mean_fluo,ci_fluo = bac.column_mean(fluo_df,column='Derivative')
+    >>> time_div,mean_div,ci_div = bac.column_mean(df3d,column='Long axis (L)')
+    >>> time_ratio,mean_ratio,ci_ratio = bac.column_mean(df3d,column='F/V')
 
 Rearranging 2D data based on division time to plot the data over time
 
@@ -58,6 +58,55 @@ Transition plots
 
 Cell Cycle Analysis
 -------------------
+
+First we will extract the Cell ID's pre and pos shift
+
+    >>> cells_pre = bac.cells_pre_shift(df3d,pre=600)
+    >>> cells_pos = bac.cells_pos_shift(df3d,pos=800)
+
+Bin the data for all the entire time
+
+    >>> # Volume derivative
+    >>> bins_fluo_vol_norm,ci_fluo_vol_norm = bac.derivative_binning(fluo_df,derivative_column='Derivative/V',sort_by='Volume',print_bins=True)
+    >>> bins_fluo_vol,ci_fluo_vol = bac.derivative_binning(fluo_df,derivative_column='Derivative',sort_by='Volume',print_bins=False)                                                            
+    >>> # Fluorescence derivative
+    >>> bins_fluo_cc_norm,ci_fluo_cc_norm = bac.derivative_binning(fluo_df,derivative_column='Derivative/V',sort_by='Cell Cycle',print_bins=False)
+    >>> bins_fluo_cc,ci_fluo_cc = bac.derivative_binning(fluo_df,derivative_column='Derivative',sort_by='Cell Cycle',print_bins=False)
+    >>> # Fluorescence/Volume Ratio
+    >>> bins_ratio_vol, ci_ratio_vol = bac.bin_column(df3d,column = 'F/V',sort_by = 'Volume',print_bins=False)
+    >>> bins_ratio_cc, ci_ratio_cc = bac.bin_column(df3d,column = 'F/V',sort_by = 'Cell Cycle',print_bins=False)
+
+Bin plots entire time
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/cell_cycle_1.png?raw=true
+
+Pre plots
+
+    >>> # Volume derivative
+    >>> bins_fluo_vol_norm,ci_fluo_vol_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative/V',sort_by='Volume',print_bins=False)
+    >>> bins_fluo_vol,ci_fluo_vol = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative',sort_by='Volume',print_bins=False)                                                         
+    >>> # Fluorescence derivative
+    >>> bins_fluo_cc_norm,ci_fluo_cc_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative/V',sort_by='Cell Cycle',print_bins=False)
+    >>> bins_fluo_cc,ci_fluo_cc = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pre)],derivative_column='Derivative',sort_by='Cell Cycle',print_bins=False)
+    >>> # Fluorescence/Volume Ratio
+    >>> bins_ratio_vol, ci_ratio_vol = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pre)],column = 'F/V',sort_by = 'Volume',print_bins=False)
+    >>> bins_ratio_cc, ci_ratio_cc = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pre)],column = 'F/V',sort_by = 'Cell Cycle',print_bins=False)
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/cell_cycle_2.png?raw=true
+
+Pos plots
+
+    >>> # Volume derivative
+    >>> bins_fluo_vol_norm,ci_fluo_vol_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative/V',sort_by='Volume',print_bins=False)
+    >>> bins_fluo_vol,ci_fluo_vol = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative',sort_by='Volume',print_bins=False)                                                         
+    >>> # Fluorescence derivative
+    >>> bins_fluo_cc_norm,ci_fluo_cc_norm = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative/V',sort_by='Cell Cycle',print_bins=False)
+    >>> bins_fluo_cc,ci_fluo_cc = bac.derivative_binning(fluo_df[fluo_df['Cell ID'].isin(cells_pos)],derivative_column='Derivative',sort_by='Cell Cycle',print_bins=False)
+    >>> # Fluorescence/Volume Ratio
+    >>> bins_ratio_vol, ci_ratio_vol = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pos)],column = 'F/V',sort_by = 'Volume',print_bins=False)
+    >>> bins_ratio_cc, ci_ratio_cc = bac.bin_column(df3d[df3d['Cell ID'].isin(cells_pos)],column = 'F/V',sort_by = 'Cell Cycle',print_bins=False)
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/cell_cycle_3.png?raw=true
 
 
 Lineages Analysis
