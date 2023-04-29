@@ -14,7 +14,7 @@ For execution we will use the following imports:
 
 We will use the example data available on GitHub:
 
-    >>> !git clone https://github.com/tuliofalmeida/bacteria    # we use '!' to execute linux commands in notebooks
+    >>> !git clone https://github.com/tuliofalmeida/bacteria    
     >>> df2d = pd.read_csv('/content/bacteria/data_tutorial/df2d_filtered.csv')
     >>> df3d = pd.read_csv('/content/bacteria/data_tutorial/df3d_filtered.csv')
 
