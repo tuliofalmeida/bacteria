@@ -108,6 +108,7 @@ loading faster. For that use:
 Colab Tutorial
 ---------------
 
-![](../../../image/colab_logo_32px.png)[Run in Google Colab](https://colab.research.google.com/assets/colab-badge.svg)][ How to concatenate and filter your data](https://camo.githubusercontent.com/84f0493939e0c4de4e6dbe113251b4bfb5353e57134ffd9fcab6b8714514d4d1/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://camo.githubusercontent.com/84f0493939e0c4de4e6dbe113251b4bfb5353e57134ffd9fcab6b8714514d4d1/68747470733a2f2f636f6c61622e72657365617263682e676f6f676c652e636f6d2f6173736574732f636f6c61622d62616467652e737667)
 
 .. _GitHub: https://github.com/tuliofalmeida/bacteria
