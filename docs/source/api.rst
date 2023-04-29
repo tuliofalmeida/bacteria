@@ -43,7 +43,18 @@ Rearranging 2D data based on division time to plot the data over time
 
 Entire time plot
 
+.. note::
+   The plot codes are available on Google Colab.
+
 .. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/experiment_time_1.png?raw=true
+
+Pre and pos shift plots
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/experiment_time_2.png?raw=true
+
+Transition plots
+
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/experiment_time_3.png?raw=true
 
 Cell Cycle Analysis
 -------------------
