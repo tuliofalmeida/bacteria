@@ -131,7 +131,7 @@ Plot one cell mother lineage and the correlation between the nodes
 
 .. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_1.png?raw=true
 
-.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_1.1.png?raw=true
+.. image:: https://github.com/tuliofalmeida/bacteria/blob/main/plots/lineage_1_1.png?raw=true
 
 The order is a paramater that will influence the amount of noise accepet to estimate the smoothed derivative
 Fluorescence concentration pre shift (using order = 5)
