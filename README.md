@@ -1,0 +1,3 @@
+# Bacteria Documentation
+
+This project was developed during my pre doctoral rotation at the [Global regulation for bacterial adaptation](https://sites.google.com/site/biancasclavi/) supervised by Bianca Sclavi. This repository holds all the code and documentation developed during this time. A pipeline was developed to analyze image data using SuperSegger and Omnipose ([Pipeline Documentation](https://github.com/tuliofalmeida/bacteria/tree/main/pipeline)) and also a library to process this data, called Bacteria ([Bacteria Documentation Site](https://bacteria.readthedocs.io/en/latest/index.html)).
