@@ -33,6 +33,10 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 7. Create a folder called _pipeline_ (or whatever name you want, you can also use the pipeline folder (this one) when downloading the repositories)
 8. Put the _pipeline.py_ and _functions_pipeline.py_ in the same the folder that you choosed
 
+If you have difficulties installing SuperSegger and placing the files you can download the files already placed correctly. The folder is hosted on Zenodo!
+
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7880822.svg)](https://doi.org/10.5281/zenodo.7880822)
+
 ## Running the pipeline
 
 This is a step by step guide to using the pipeline after installation, but before you run your data read the section "Before you start".
