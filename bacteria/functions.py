@@ -2776,10 +2776,15 @@ def plot_corr_lineage(df_3d, reverse_lineages, mother_cell, column = 'Fluor1 mea
         fig.suptitle('Lineage of Cell {}'.format(mother_cell),fontsize = 17)
         plt.show()
 
-def plot_distance_minima_lineage(df_3d,df_2d,lineages_list,column='Fluor1 sum',derivative_column='Derivative',order=9,ax = None):
+def plot_distance_minima_lineage(df_3d,df_2d,lineages_list,column='Fluor1 sum',derivative_column='Derivative',order=5,ax = None):
     """
     Function to plot the distance between the minimas for
-    an specifics lineages.
+    an specifics lineages. Here we are calculating the 
+    minima inside the lineage, so it might be better to 
+    just use the diff_minima() function. Change the
+    diff_minima() function to return the minimum along 
+    with the Cells ID and use that data here. This may 
+    be better for the smooth (TODO) tuning issue
 
     Parameters
     --------------

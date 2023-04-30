@@ -179,4 +179,9 @@ All codes and plots are available on a notebook at Google Colab!
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
    :target: https://colab.research.google.com/github/tuliofalmeida/bacteria/blob/main/notebooks/Tutorial_Analysis.ipynb
 
+Here is a template for performing this analysis
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/tuliofalmeida/bacteria/blob/main/notebooks/Report_Template.ipynb
+
 .. _GitHub: https://github.com/tuliofalmeida/bacteria
