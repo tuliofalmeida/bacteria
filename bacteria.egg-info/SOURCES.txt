@@ -1,4 +1,4 @@
-README.rst
+README.md
 setup.py
 bacteria/__init__.py
 bacteria/functions.py
