@@ -9,7 +9,6 @@ This pipeline was developed to use SuperSegger + Omnipose more fluidly in Python
 - [Running the pipeline](#running-the-pipeline) 
 - [Pipeline Flow](#pipeline-flow)
 - [Before you start!](#before-you-start)
-- [Development](#development)
 
 ## Requirements
 
@@ -192,6 +191,7 @@ This section is to give more information about the pipeline, how to organize the
   <summary>Possible erros</summary>
   
   Several things can produce an error in this code, because it has not been tested with much variability. If you get an error following this tutorial, check if the data is organized correctly, if all paths are correct, if the choices made in the pipeline are correct (the value of the inputs). Then, try to run it again ! Another thing that can be involved is different versions of packages needed by python/matlab and the OS used, the installation should be done carefully. If errors persist please open an [Issue here on GitHub](https://github.com/tuliofalmeida/bacteria/issues/new)! When creating an Issue try to be as specific as possible, put the complete error (copy and paste), tell how it happened, add a screenshot of the terminal.
+  I believe SuperSegger is designed to analyze a single FOV at a time, so when trying to run multiple FOVs the folders must have the same amount of images.
   
 </details>
 
@@ -209,7 +209,17 @@ This section is to give more information about the pipeline, how to organize the
 
 </details>
 
-## Development
+<details>
+  <summary>GPU</summary>
+  
+  If you have a GPU, just configure it (check the [Omnipose Tutorial](https://github.com/kevinjohncutler/omnipose#gpu-support)). So I believe that the omnipose will automatically use it without the need to change the code, if necessary it should be changed the same way you select the network parameters (same line of code).
+  
+</details>
 
-I developed this pipeline during my 3 month pre-doc rotation working with the PhD. Bianca Sclavi.
+<details>
+  <summary>Pipeline Log</summary>
+  
+  After running the analyses the pipeline saves in the project folder a .txt file with the time spent by the code in each FOV.
+  
+</details>
 
