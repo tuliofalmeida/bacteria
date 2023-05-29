@@ -184,4 +184,9 @@ Here is a template for performing this analysis
 .. image:: https://colab.research.google.com/assets/colab-badge.svg
    :target: https://colab.research.google.com/github/tuliofalmeida/bacteria/blob/main/notebooks/Report_Template.ipynb
 
+Here is an example of estimating the mean and CI of a column from 2D data
+
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/tuliofalmeida/bacteria/blob/main/notebooks/2d_mean_plot.ipynb
+
 .. _GitHub: https://github.com/tuliofalmeida/bacteria
