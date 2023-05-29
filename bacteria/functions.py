@@ -1297,6 +1297,100 @@ def plot_column_mean(times,mean,ci,column,color = 'Orange', ax = None):
         
         return out
 
+def column2d_mean(df,column = 'Vd-Vb',window=30,conf = .95, method = np.mean):
+    """
+    Estimate the column mean for all cells using
+    the 'pd.melt()' method, sorting by time at division.
+
+    Parameters
+    --------------
+    df : DataFrame
+        DataFrame with the deravtive data alongside 
+        with the time and volume or the 3D df
+    column : str
+        column to calculate the mean
+    window : int
+        value to use in 'rolling.mean()'
+    conf : float (optional)
+        confidence interval desired for bootstrap,
+        default - 0.95
+    method : function (optional)
+        Method to use as basis for the boostrap,
+        default its np.mean. Other options are np.std
+        and stats.sem.
+        
+    Returns
+    --------------
+    times : nd.array
+        1D time vector with the uniques time points (fps)
+    mean : nd.array
+        1D time vector with the mean for 
+        each time point
+    ci : nd.array
+        array(2,bins) with inferior Confidence
+        Interval in the first column and the 
+    """
+    df_2d_temp = pd.melt(df2d, id_vars=['Cell ID','Cell age','Area death','Time Division'], value_vars=[column]).sort_values(by=['Time Division'])
+    len_data = []
+    if column == 'Vd-Vb':
+        mean = df_2d_temp.value.rolling(window).mean().dropna()
+    else:
+        mean = df_2d_temp[column].rolling(window).mean().dropna()
+    times = df_2d_temp[df_2d_temp['Time Division'].index.isin(mean.index)]['Time Division'].values
+    ci = np.zeros((len(mean),2))
+
+    for idx in range(1,len(mean)-1):
+        ci[idx,:] = ci_bootstrap(mean[idx-1:idx+1],conf = conf, method = method, plot = False)
+
+    return times,mean,ci
+
+def plot_column2d_mean(times,mean,ci,column = 'Vd-Vb',color = 'green', ax = None):
+    """
+    Plot the colunm mean for the entire experiment.
+    Check also 'column_mean()'.
+
+    Parameters
+    --------------
+    time : nd.array
+            1D time vector with the uniques time points (fps)
+            output of 'column_mean()'
+    mean : nd.array
+            1D time vector with the mean growth rate for 
+            each time point output of 'column_mean()'
+    ci : nd.array
+            array(2,bins) with inferior Confidence
+            Interval in the first column and the 
+            upper one in the second output of 
+            'column_mean()'
+    column : str
+            DataFrame column to estimate the column_mean,
+            default is 'Volume'
+    color: str (optional)
+            Color to plot the growth rate.
+    ax : nd.array (optional)
+            the ax position to plot
+        
+    Returns
+    --------------
+    None
+    """
+    if ax is None:
+        plt.plot(times,mean, color = color)
+        plt.fill_between(times[1:-1],ci[1:-1,0],ci[1:-1,1],color=color, alpha = .3)
+        plt.title(column+ ' Mean', fontsize = 17)
+        plt.xlabel('Time (min)', fontsize = 15)
+        plt.ylabel(column, fontsize = 17)
+        plt.show()
+    else:
+        out = []
+        out.append(ax.plot(times,mean, color = color))
+        out.append(ax.fill_between(times[1:-1],ci[1:-1,0],ci[1:-1,1],color=color, alpha = .3))
+        out.append(ax.set_title(column+ ' Mean', fontsize = 17))
+        out.append(ax.set_xlabel('Time (min)', fontsize = 15))
+        out.append(ax.set_ylabel(column, fontsize = 17))
+        
+        return out
+
 def	derivative_binning(df_deriv, derivative_column = 'Derivative', bins = 10 , sort_by = 'Cell Cycle', print_bins = True, conf = 0.95, method = np.mean):
     """
     Perform the binning of the derivative of one column.
