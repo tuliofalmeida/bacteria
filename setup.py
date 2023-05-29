@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name = 'bacteria',         
     packages = ['bacteria'],   
-    version = '1.1.0',      
+    version = '1.2.0',      
     license='MIT',       
     description = 'Super Segger Analysis in Python.',
     long_description_content_type="text/x-rst",

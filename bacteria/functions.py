@@ -1297,7 +1297,7 @@ def plot_column_mean(times,mean,ci,column,color = 'Orange', ax = None):
         
         return out
 
-def column2d_mean(df,column = 'Vd-Vb',window=30,conf = .95, method = np.mean):
+def column2d_mean(df,column = 'Vd-Vb',window=30, conf = .95, method = np.mean):
     """
     Estimate the column mean for all cells using
     the 'pd.melt()' method, sorting by time at division.
@@ -1306,7 +1306,7 @@ def column2d_mean(df,column = 'Vd-Vb',window=30,conf = .95, method = np.mean):
     --------------
     df : DataFrame
         DataFrame with the deravtive data alongside 
-        with the time and volume or the 3D df
+        with the time and volume or the 2D df
     column : str
         column to calculate the mean
     window : int
@@ -1330,8 +1330,7 @@ def column2d_mean(df,column = 'Vd-Vb',window=30,conf = .95, method = np.mean):
         array(2,bins) with inferior Confidence
         Interval in the first column and the 
     """
-    df_2d_temp = pd.melt(df2d, id_vars=['Cell ID','Cell age','Area death','Time Division'], value_vars=[column]).sort_values(by=['Time Division'])
-    len_data = []
+    df_2d_temp = pd.melt(df, id_vars=['Cell ID','Cell age','Area death','Time Division'], value_vars=[column]).sort_values(by=['Time Division'])
     if column == 'Vd-Vb':
         mean = df_2d_temp.value.rolling(window).mean().dropna()
     else:
