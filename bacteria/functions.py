@@ -438,7 +438,9 @@ def concatenate_clist(path, fps = 3, filters = True, save_mat = False, path2save
 def combined_filters(df_2d, df_3d, std = 1, daughter = True, lentgh = True, plot=False):
     """
     Plot the mean fluo for the lineage for the entire experiment.
-    Check also fluor_lineage().
+    Check also fluor_lineage(). The default filter is 'stat0==2'
+    removing the data with grow rate = 0, values with NaN values
+    and data with low points.
 
     Parameters
     --------------
@@ -467,6 +469,22 @@ def combined_filters(df_2d, df_3d, std = 1, daughter = True, lentgh = True, plot
     gc_filter : nd.array
         Array with good cells ID after filter
     """
+
+    cell_filt = []
+    for cell in df_2d['Cell ID'].values:
+        if df_2d[df_2d['Cell ID']==cell]['Growth Rate'].values==0:
+            cell_filt.append(cell)
+        if df_3d[df_3d['Cell ID']==cell].isnull().values.any():
+           cell_filt.append(cell)
+        if len(df_3d[df_3d['Cell ID']==cell]) <= 4:
+            cell_filt.append(cell)
+
+    cell_filt = natsorted(set(cell_filt))
+    cells = [cell for cell in df_2d['Cell ID'].values if cell not in cell_filt]
+
+    df_2d = df_2d[df_2d['Cell ID'].isin(cells)]
+    df_3d = df_3d[df_3d['Cell ID'].isin(cells)]
+
     gc = df_2d[df_2d['stat0'] == 2]['Cell ID'].values
     wm_cell = [cell for cell in gc if df_2d[df_2d['Cell ID']==cell]['Mother ID'].values in gc]
     good_daughters = []
@@ -1195,7 +1213,7 @@ def derivative(df_3d, column = 'Fluor1 sum',minus = 1, plus = 2, bar = True):
 
     return df_derivative,dict_derivative
 
-def column_mean(df,column,conf = .95, method = np.mean, plot_hist = False):
+def column_mean(df,column,conf = .95, method = np.mean,smooth = False,factor=10, plot_hist = False):
     """
     Estimate the column mean for all cells using
     the 'pd.melt()' method, sorting by time.
@@ -1214,6 +1232,10 @@ def column_mean(df,column,conf = .95, method = np.mean, plot_hist = False):
         Method to use as basis for the boostrap,
         default its np.mean. Other options are np.std
         and stats.sem.
+    smooth : bool
+        If true will smooth the column value and the CI
+    factor : int
+        Factor to smooth the data, default = 10
     plot_hist: bool (optional)
         Plot a histogram with the data distribution
         
@@ -1238,9 +1260,14 @@ def column_mean(df,column,conf = .95, method = np.mean, plot_hist = False):
         mean[idx] = np.mean(temp)
         len_data.append(len(df[df['Time (fps)']==ts][column].values))
         if len(temp) > 1:
-            ci[idx,:] = ci_bootstrap(temp,conf = conf, method = method, plot = False)
+            ci[idx,:] = bac.ci_bootstrap(temp,conf = conf, method = method, plot = False)
         else:
             ci[idx,:] = [-temp[0],+temp[0]]
+
+    if smooth:
+        mean = bac.smooth(mean,10)
+        ci[:,0] =  bac.smooth(ci[:,0],10)
+        ci[:,1] =  bac.smooth(ci[:,1],10)
 
     if plot_hist:
         plt.hist(len_data)
@@ -1330,11 +1357,9 @@ def column2d_mean(df,column = 'Vd-Vb',window=30, conf = .95, method = np.mean):
         array(2,bins) with inferior Confidence
         Interval in the first column and the 
     """
-    df_2d_temp = pd.melt(df, id_vars=['Cell ID','Cell age','Area death','Time Division'], value_vars=[column]).sort_values(by=['Time Division'])
-    if column == 'Vd-Vb':
-        mean = df_2d_temp.value.rolling(window).mean().dropna()
-    else:
-        mean = df_2d_temp[column].rolling(window).mean().dropna()
+    df_2d_temp = pd.melt(df, id_vars=['Cell ID','Time Division'], value_vars=[column]).sort_values(by=['Time Division'])
+
+    mean = df_2d_temp.value.rolling(window).mean().dropna()
     times = df_2d_temp[df_2d_temp['Time Division'].index.isin(mean.index)]['Time Division'].values
     ci = np.zeros((len(mean),2))
 
@@ -3337,3 +3362,28 @@ def cells_pos_shift(df_3d, pos):
     cells_pos = [cell for cell in all_cells if df_3d[df_3d['Cell ID']==cell]['Time (fps)'].values[0] > pos]
 
     return np.asarray(cells_pos)
+
+def smooth(data,factor=10):
+    """
+    1-D smooth filter
+
+    Parameters
+    ----------
+
+    data : nd.array
+        The file location in drive or HDD
+    factor : int
+        The factor to convolve and smooth the graph.
+        The greater the value, the greater the noise 
+        attenuation. Default 10.
+
+    Example
+    ----------
+    smooth(data,10)
+
+    See Also
+    --------
+    Developed by Mike X Cohen.
+    """
+    import numpy as np
+    return np.convolve(data,np.ones(factor)/factor,mode='same') 
