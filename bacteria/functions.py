@@ -462,7 +462,7 @@ def combined_filters(df_2d, df_3d, std = 1, daughter = True, lentgh = True, plot
         
     Returns
     --------------
-    df_2d : DataFrame
+    df_2d : DataFramef
         Filtered DataFrame of 2D data
     df_3d : DataFrame
         Filtered DataFrame of 3D data
@@ -1245,7 +1245,7 @@ def column_mean(df,column,conf = .95, method = np.mean,smooth = False,factor=10,
         1D time vector with the uniques time points (fps)
     mean : nd.array
         1D time vector with the mean for 
-        each time point
+        each time points
     ci : nd.array
         array(2,bins) with inferior Confidence
         Interval in the first column and the 
@@ -1260,14 +1260,14 @@ def column_mean(df,column,conf = .95, method = np.mean,smooth = False,factor=10,
         mean[idx] = np.mean(temp)
         len_data.append(len(df[df['Time (fps)']==ts][column].values))
         if len(temp) > 1:
-            ci[idx,:] = bac.ci_bootstrap(temp,conf = conf, method = method, plot = False)
+            ci[idx,:] = ci_bootstrap(temp,conf = conf, method = method, plot = False)
         else:
             ci[idx,:] = [-temp[0],+temp[0]]
 
     if smooth:
-        mean = bac.smooth(mean,10)
-        ci[:,0] =  bac.smooth(ci[:,0],10)
-        ci[:,1] =  bac.smooth(ci[:,1],10)
+        mean = smooth(mean,10)
+        ci[:,0] =  smooth(ci[:,0],10)
+        ci[:,1] =  smooth(ci[:,1],10)
 
     if plot_hist:
         plt.hist(len_data)
